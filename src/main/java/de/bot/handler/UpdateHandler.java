@@ -11,9 +11,13 @@ import java.nio.channels.ReadableByteChannel;
 public class UpdateHandler {
 
     private final String currentVersion = "0.1";
-    public boolean newUpdateAvailable = false;
+    private boolean newUpdateAvailable = false;
     private String newestVersion = "";
-    String newUpdateDownloadLink = "https://cdn.discordapp.com/attachments/869203961884844063/1137402711780896788/TwitchBot.jar";
+    String newUpdateDownloadLink = "";
+
+    public String getCurrentVersion() {
+        return currentVersion;
+    }
 
     private void checkForUpdate() {
         try (Socket socket = new Socket("", 3428)) {
