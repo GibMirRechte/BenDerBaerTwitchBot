@@ -31,7 +31,7 @@ public class Main {
     static final String accessToken = "yn8k7e7c0bxs62fc26oo4xhapr0ylj";
     final String refreshToken = "qb5g3dvrrz3medmxxrdq5iz5wi8w56oht0z2wb5tfun69i9xun";
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         // TwitchClient benderbaer = TwitchClientBuilder.builder().withEnableHelix(Boolean.TRUE).withClientId("gp762nuuoqcoxypju8c569th9wz7q5").withChatAccount(new OAuth2Credential("twitch", accessToken)).withEnableChat(Boolean.TRUE).build();
 
         windowHandler.openWindow(WindowHandler.WindowType.DASHBOARD);
