@@ -10,6 +10,7 @@ public class ImageIconHandler {
 
         VIP_ICON(new ImageIcon(Main.class.getResource("/images/vip.png"))),
         UPDATE_NOTIFICATION(new ImageIcon(Main.class.getResource("/images/update.png"))),
+        LOGO_NORMAL(new ImageIcon(Main.class.getResource("/images/logoNormal.png"))),
         LOGO_PREMIUM(new ImageIcon(Main.class.getResource("/images/logoPremium.png"))),
         LOGO_STAFF(new ImageIcon(Main.class.getResource("/images/logoStaff.png")));
         public final ImageIcon imageIcon;

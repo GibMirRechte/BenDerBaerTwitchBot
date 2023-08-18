@@ -4,14 +4,12 @@ import de.bot.handler.ImageIconHandler;
 import de.bot.handler.UpdateHandler;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.net.URL;
 
 public class Dashboard extends JPanel {
 

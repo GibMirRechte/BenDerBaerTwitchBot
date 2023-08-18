@@ -2,6 +2,7 @@ package de.bot.handler;
 
 import de.bot.main.Main;
 import de.bot.windows.Dashboard;
+import de.bot.windows.Login;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +14,7 @@ public class WindowHandler {
     UpdateHandler updateHandler = new UpdateHandler();
 
     public enum WindowType {
-        DASHBOARD;
+        DASHBOARD, LOGIN;
     }
 
 
@@ -26,14 +27,20 @@ public class WindowHandler {
             case DASHBOARD:
                 currentWindow = WindowType.DASHBOARD;
                 frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Dashboard");
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.setIconImage(icon);
                 frame.getContentPane().add(new Dashboard()).setBackground(new Color(0x272727));
-                frame.pack();
-                frame.setResizable(false);
+                break;
+            case LOGIN:
+                currentWindow = WindowType.DASHBOARD;
+                frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Login");
+                frame.getContentPane().add(new Login()).setBackground(new Color(0x272727));
                 break;
             default:
                 break;
         }
+
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setIconImage(icon);
+        frame.pack();
+        frame.setResizable(false);
     }
 }
