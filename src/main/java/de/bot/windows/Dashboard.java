@@ -13,7 +13,7 @@ import java.net.URISyntaxException;
 
 public class Dashboard extends JPanel {
 
-    UpdateHandler updateHandler = new UpdateHandler();
+    UpdateHandler updateHandler = UpdateHandler.getInstance();
 
     public Dashboard() {
         ImageIcon vipLabel = new ImageIcon(ImageIconHandler.imageType.VIP_ICON.imageIcon.getImage().getScaledInstance(37, 17, Image.SCALE_SMOOTH));

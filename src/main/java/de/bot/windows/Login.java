@@ -2,8 +2,13 @@ package de.bot.windows;
 
 import de.bot.elements.RoundedJPasswordField;
 import de.bot.elements.RoundedJTextField;
+import de.bot.handler.AccountHandler;
 import de.bot.handler.ImageIconHandler;
 import de.bot.handler.UpdateHandler;
+import de.bot.handler.WindowHandler;
+import de.bot.utils.Account;
+import de.bot.utils.Announcement;
+import de.bot.utils.BanData;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -15,10 +20,18 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.net.Socket;
 
 public class Login extends JPanel {
 
-    UpdateHandler updateHandler = new UpdateHandler();
+    UpdateHandler updateHandler = UpdateHandler.getInstance();
+    AccountHandler accountHandler = AccountHandler.getInstance();
+    WindowHandler windowHandler = WindowHandler.getInstance();
+    long lastLoginAttempt = System.currentTimeMillis();
 
     public Login() {
         setPreferredSize(new Dimension(1280, 720));
@@ -30,18 +43,47 @@ public class Login extends JPanel {
             e.printStackTrace();
         }
 
+        Announcement an = updateHandler.getAnnouncement();
+
         JLabel register = new JLabel("Registrieren");
+        JLabel announcement = new JLabel("<html><center>" + an.text + "</center></html>");
+        JLabel loginFeedback = new JLabel("loginFeedback");
         JLabel logo = new JLabel(ImageIconHandler.imageType.LOGO_NORMAL.imageIcon);
         JLabel login = new JLabel("Login");
+        JLabel loginButton = new JLabel("Anmelden");
         JLabel messageField = new JLabel("<html><center>GESPERRT!<br><br>Dieser Account ist zurzeit gesperrt!<br>Grund: Unerlaubtes Bugusing<br>Dauer: Dauerhaft</center></html>");
         RoundedJPasswordField password = new RoundedJPasswordField(10, new Color(0x272727), true, 40, 40);
         RoundedJTextField username = new RoundedJTextField(10, new Color(0x272727), true, 40, 40);
+
+        announcement.setBackground(new Color(0xD03F3F));
+        announcement.setForeground(Color.WHITE);
+        announcement.setOpaque(true);
+        announcement.setVisible(an.isActive);
+        announcement.setHorizontalAlignment(JLabel.CENTER);
+        announcement.setIcon(ImageIconHandler.imageType.WARN_ICON.imageIcon);
+        announcement.setHorizontalTextPosition(JLabel.RIGHT);
+        announcement.setFont(new Font("Oswald Medium", Font.PLAIN, 14));
+
+        loginFeedback.setBackground(new Color(0xFFD03F3F));
+        loginFeedback.setForeground(Color.WHITE);
+        loginFeedback.setOpaque(true);
+        loginFeedback.setVisible(false);
+        loginFeedback.setHorizontalAlignment(JLabel.CENTER);
+        loginFeedback.setHorizontalTextPosition(JLabel.RIGHT);
+        loginFeedback.setFont(new Font("Oswald Medium", Font.PLAIN, 14));
 
         login.setBackground(new Color(0x113F67));
         login.setForeground(Color.WHITE);
         login.setHorizontalAlignment(SwingConstants.CENTER);
         login.setVerticalAlignment(SwingConstants.CENTER);
         login.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
+
+        loginButton.setBackground(new Color(0x86BECC));
+        loginButton.setOpaque(true);
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setHorizontalAlignment(SwingConstants.CENTER);
+        loginButton.setVerticalAlignment(SwingConstants.CENTER);
+        loginButton.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
 
         register.setBackground(new Color(0x113F67));
         register.setForeground(Color.WHITE);
@@ -95,18 +137,109 @@ public class Login extends JPanel {
             }
         });
 
+        loginButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                loginButton.setText("<html><u>Anmelden</u></html>");
+                loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                loginButton.setText("Anmelden");
+                loginButton.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (!an.canUseTool) {
+                    loginFeedback.setText("Zurzeit ist eine Anmeldung nicht möglich. Bitte versuche es später erneut.");
+                    loginFeedback.setVisible(true);
+                    return;
+                }
+                if (!username.getText().equalsIgnoreCase("Benutzername") && !password.getText().equalsIgnoreCase("Passwort")) {
+                    String name = username.getText();
+                    String pw = password.getText();
+                    try {
+                        Socket socket = new Socket("45.93.249.139", 3459);
+                        OutputStream outputStream = socket.getOutputStream();
+                        PrintStream printStream = new PrintStream(outputStream);
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                        printStream.println("LOGIN");
+                        printStream.println(name);
+                        printStream.println(pw);
+
+                        /*
+                        OUTPUT:
+                        AccountType (STR)
+                        IsBanned (BOOL)
+                        BannedUntil (LONG)
+                        BannedReason (STR)
+                         */
+
+                        boolean canLogin = Boolean.parseBoolean(bufferedReader.readLine());
+
+                        if (canLogin) {
+                            AccountHandler.AccountType accountType;
+                            String accountTypeString = bufferedReader.readLine();
+                            boolean isBanned = Boolean.parseBoolean(bufferedReader.readLine());
+                            long bannedUntil = 0;
+                            String bannedReason = "";
+
+                            if (isBanned) {
+                                bannedUntil = Long.parseLong(bufferedReader.readLine());
+                                bannedReason = bufferedReader.readLine();
+                            }
+
+                            try {
+                                accountType = AccountHandler.AccountType.valueOf(accountTypeString);
+                            } catch (IllegalArgumentException illegalArgumentException) {
+                                accountType = AccountHandler.AccountType.NORMAL;
+                            }
+
+                            Account acc = new Account(username.getText(), pw, accountType, new BanData(isBanned, bannedUntil, bannedReason));
+                            accountHandler.setAccount(acc);
+
+                            windowHandler.openWindow(WindowHandler.WindowType.DASHBOARD);
+                        } else {
+                            String reason = bufferedReader.readLine();
+
+                            if (reason.equalsIgnoreCase("WRONG_DATA")) {
+                                announcement.setText("Ungültiger Username oder Passwort.");
+                            } else if (reason.equalsIgnoreCase("ALREADY_ONLINE")) {
+                                announcement.setText("Dieser Account ist bereits an einem anderen Standort angemeldet.");
+                            }
+                        }
+
+                    } catch (Exception ignored) {
+                        loginFeedback.setText("Ungültiger Username oder Passwort.");
+                        loginFeedback.setVisible(true);
+                        if (password.isFocusOwner()) {
+                            password.setText("");
+                        } else {
+                            password.setForeground(Color.GRAY);
+                            password.setText("Passwort");
+                            password.setEchoChar((char) 0);
+                        }
+                    }
+                }
+            }
+        });
+
         password.setBackground(new Color(0x464646));
         password.setForeground(Color.GRAY);
         password.setText("Passwort");
         password.setEchoChar((char) 0);
         password.setFont(new Font("Oswald Medium", Font.BOLD, 20));
 
+        messageField.setVisible(false);
         messageField.setForeground(Color.WHITE);
         messageField.setOpaque(true);
-        messageField.setBackground(new Color(139, 0, 0));
+        messageField.setBackground(new Color(0xD03F3F));
         messageField.setHorizontalAlignment(SwingConstants.CENTER);
         messageField.setVerticalAlignment(SwingConstants.CENTER);
-        messageField.setFont(new Font("Oswald Medium", Font.PLAIN, 20));
+        messageField.setFont(new Font("Oswald Medium", Font.PLAIN, 18));
 
         password.addFocusListener(new FocusListener() {
             @Override
@@ -140,11 +273,6 @@ public class Login extends JPanel {
                 register.setText("Registrieren");
                 register.setCursor(Cursor.getDefaultCursor());
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                register.setBackground(new Color(0x113F67));
-            }
         });
 
         login.addMouseListener(new MouseAdapter() {
@@ -159,11 +287,6 @@ public class Login extends JPanel {
                 login.setText("Login");
                 login.setCursor(Cursor.getDefaultCursor());
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                login.setBackground(new Color(0x113F67));
-            }
         });
 
         if (updateHandler.hasNewUpdate()) {
@@ -172,19 +295,25 @@ public class Login extends JPanel {
             updateAvailable.setBounds(427, 177, 685, 365);
         }
 
+        add(announcement);
         add(register);
+        add(loginButton);
         add(logo);
         add(login);
         add(password);
         add(username);
+        add(loginFeedback);
         add(messageField);
 
+        announcement.setBounds(438, 112, 660, 40);
+        loginFeedback.setBounds(455, 187, 625, 40);
+        loginButton.setBounds(645, 427, 250, 75);
         register.setBounds(5, 280, 245, 70);
         logo.setBounds(5, 10, 245, 180);
         login.setBounds(5, 200, 245, 70);
-        username.setBounds(438, 277, 660, 75);
-        messageField.setBounds(520, 477, 500, 200);
-        password.setBounds(438, 377, 660, 75);
+        username.setBounds(438, 227, 660, 75);
+        messageField.setBounds(520, 532, 500, 150);
+        password.setBounds(438, 327, 660, 75);
 
         JLabel sidebarBackground = new JLabel("");
         sidebarBackground.setBounds(0, 0, 255, 720);

@@ -1,6 +1,7 @@
 package de.bot.handler;
 
 import de.bot.main.Main;
+import de.bot.utils.Announcement;
 
 import java.io.*;
 import java.net.Socket;
@@ -12,8 +13,43 @@ public class UpdateHandler {
 
     private final String currentVersion = "0.1";
     private boolean newUpdateAvailable = false;
+    static UpdateHandler instance;
     private String newestVersion = "";
     String newUpdateDownloadLink = "";
+    Announcement announcement;
+
+    public static UpdateHandler getInstance() {
+        if (instance == null) {
+            instance = new UpdateHandler();
+        }
+
+        return instance;
+    }
+
+    public Announcement getAnnouncement() {
+
+        if (announcement == null) {
+            try {
+                Socket socket = new Socket("", 3428);
+                OutputStream outputStream = socket.getOutputStream();
+                PrintStream printStream = new PrintStream(outputStream);
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+                printStream.println("GET_ANNOUNCEMENT");
+                String text = bufferedReader.readLine();
+                int typeID = Integer.parseInt(bufferedReader.readLine());
+                String color = bufferedReader.readLine();
+                boolean canUseTool = Boolean.parseBoolean(bufferedReader.readLine());
+                boolean isActive = Boolean.parseBoolean(bufferedReader.readLine());
+
+                announcement = new Announcement(text, typeID, color, canUseTool, isActive);
+            } catch (Exception e) {
+                announcement = new Announcement("Es konnte keine Verbindung zum Server aufgebaut werden. Bitte versuche es später erneut.", 1, "0xD03F3F", false, true);
+            }
+        }
+
+        return announcement;
+    }
 
     public String getCurrentVersion() {
         return currentVersion;
@@ -26,7 +62,7 @@ public class UpdateHandler {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             printStream.println("GET_VERSION");
-            printStream.println("BenDerBaer_Twitch_VIP_Bot");
+            printStream.println("TwitchTool");
 
             newestVersion = bufferedReader.readLine();
             newUpdateDownloadLink = bufferedReader.readLine();
@@ -62,7 +98,7 @@ public class UpdateHandler {
     public void downloadNewestVersion() throws IOException {
         try (InputStream in = new URL(newUpdateDownloadLink).openStream();
              ReadableByteChannel rbc = Channels.newChannel(in);
-             FileOutputStream fos = new FileOutputStream(getFilePath().replace(".jar", "") + "-1.jar")) {
+             FileOutputStream fos = new FileOutputStream(getFilePath())) {
             fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
         }
     }

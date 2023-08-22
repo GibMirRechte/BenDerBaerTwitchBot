@@ -11,10 +11,17 @@ public class WindowHandler {
 
     private static final JFrame frame = new JFrame();
     public static WindowType currentWindow;
-    UpdateHandler updateHandler = new UpdateHandler();
+    static WindowHandler instance;
+    UpdateHandler updateHandler = UpdateHandler.getInstance();
 
     public enum WindowType {
         DASHBOARD, LOGIN;
+    }
+
+    public static WindowHandler getInstance() {
+        if (instance == null)
+            instance = new WindowHandler();
+        return instance;
     }
 
 
