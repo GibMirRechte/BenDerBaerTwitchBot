@@ -1,28 +1,46 @@
 package de.bot.windows;
 
+import de.bot.handler.AccountHandler;
+import de.bot.handler.ImageIconHandler;
+import de.bot.utils.Account;
+
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 public class UpdateAvailable extends JPanel {
 
+    AccountHandler accountHandler = AccountHandler.getInstance();
+
     public UpdateAvailable() {
-        File file = new File("C:\\Users\\User\\Desktop\\update.png");
-        setPreferredSize(new Dimension(1280, 720));
+        Account account = accountHandler.getAccount();
+        setPreferredSize(new Dimension(1025, 720));
         setLayout(null);
 
-        JLabel jcomp2 = new JLabel(new ImageIcon(file.getAbsolutePath()));
+        JLabel jcomp2 = new JLabel(ImageIconHandler.imageType.UPDATE_NOTIFICATION.imageIcon);
+        jcomp2.setVisible(true);
         add(jcomp2);
 
-        jcomp2.setBounds(320, 177, 685, 365);
-    }
+        JLabel logo;
 
+        if (account.getAccountType().equals(AccountHandler.AccountType.PREMIUM)) {
+            logo = new JLabel(ImageIconHandler.imageType.LOGO_PREMIUM.imageIcon);
+        } else if (account.getAccountType().equals(AccountHandler.AccountType.ADMIN) ||
+                account.getAccountType().equals(AccountHandler.AccountType.STAFF)) {
+            logo = new JLabel(ImageIconHandler.imageType.LOGO_STAFF.imageIcon);
+        } else {
+            logo = new JLabel(ImageIconHandler.imageType.LOGO_NORMAL.imageIcon);
+        }
 
-    public static void main(String[] args) {
-        JFrame frame = new JFrame("MyPanel");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(new UpdateAvailable()).setBackground(new Color(0x272727));
-        frame.pack();
-        frame.setVisible(true);
+        add(logo);
+
+        logo.setBounds(5, 10, 245, 180);
+        jcomp2.setBounds(425, 177, 685, 365);
+
+        JLabel sidebarBackground = new JLabel("");
+        sidebarBackground.setBounds(0, 0, 255, 720);
+        sidebarBackground.setOpaque(true);
+        add(sidebarBackground);
+        sidebarBackground.setBackground(new Color(0x113F67));
+
     }
 }

@@ -51,18 +51,22 @@ public class Login extends JPanel {
         JLabel logo = new JLabel(ImageIconHandler.imageType.LOGO_NORMAL.imageIcon);
         JLabel login = new JLabel("Login");
         JLabel loginButton = new JLabel("Anmelden");
-        JLabel messageField = new JLabel("<html><center>GESPERRT!<br><br>Dieser Account ist zurzeit gesperrt!<br>Grund: Unerlaubtes Bugusing<br>Dauer: Dauerhaft</center></html>");
+        JLabel messageField = new JLabel("<html><center>GESPERRT!<br><br>Dieser Account ist zurzeit gesperrt!<br>Grund: Nicht angegeben<br>Dauer: Dauerhaft</center></html>");
         RoundedJPasswordField password = new RoundedJPasswordField(10, new Color(0x272727), true, 40, 40);
         RoundedJTextField username = new RoundedJTextField(10, new Color(0x272727), true, 40, 40);
 
-        announcement.setBackground(new Color(0xD03F3F));
+        announcement.setBackground(Color.decode(an.color));
         announcement.setForeground(Color.WHITE);
         announcement.setOpaque(true);
         announcement.setVisible(an.isActive);
         announcement.setHorizontalAlignment(JLabel.CENTER);
-        announcement.setIcon(ImageIconHandler.imageType.WARN_ICON.imageIcon);
+        if (an.typeID == 1) {
+            announcement.setIcon(ImageIconHandler.imageType.WARN_ICON.imageIcon);
+        } else {
+            announcement.setIcon(ImageIconHandler.imageType.INFO_ICON.imageIcon);
+        }
         announcement.setHorizontalTextPosition(JLabel.RIGHT);
-        announcement.setFont(new Font("Oswald Medium", Font.PLAIN, 14));
+        announcement.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
 
         loginFeedback.setBackground(new Color(0xFFD03F3F));
         loginFeedback.setForeground(Color.WHITE);
@@ -70,31 +74,31 @@ public class Login extends JPanel {
         loginFeedback.setVisible(false);
         loginFeedback.setHorizontalAlignment(JLabel.CENTER);
         loginFeedback.setHorizontalTextPosition(JLabel.RIGHT);
-        loginFeedback.setFont(new Font("Oswald Medium", Font.PLAIN, 14));
+        loginFeedback.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
 
         login.setBackground(new Color(0x113F67));
         login.setForeground(Color.WHITE);
         login.setHorizontalAlignment(SwingConstants.CENTER);
         login.setVerticalAlignment(SwingConstants.CENTER);
-        login.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
+        login.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
 
         loginButton.setBackground(new Color(0x86BECC));
         loginButton.setOpaque(true);
         loginButton.setForeground(Color.WHITE);
         loginButton.setHorizontalAlignment(SwingConstants.CENTER);
         loginButton.setVerticalAlignment(SwingConstants.CENTER);
-        loginButton.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
+        loginButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 36));
 
         register.setBackground(new Color(0x113F67));
         register.setForeground(Color.WHITE);
         register.setHorizontalAlignment(SwingConstants.CENTER);
         register.setVerticalAlignment(SwingConstants.CENTER);
-        register.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
+        register.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
 
         username.setBackground(new Color(0x464646));
         username.setForeground(Color.GRAY);
         username.setText("Benutzername");
-        username.setFont(new Font("Oswald Medium", Font.BOLD, 20));
+        username.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
 
         ((AbstractDocument) username.getDocument()).setDocumentFilter(new DocumentFilter() {
             @Override
@@ -157,10 +161,13 @@ public class Login extends JPanel {
                     loginFeedback.setVisible(true);
                     return;
                 }
+
                 if (!username.getText().equalsIgnoreCase("Benutzername") && !password.getText().equalsIgnoreCase("Passwort")) {
                     String name = username.getText();
                     String pw = password.getText();
                     try {
+                        messageField.setVisible(false);
+                        loginFeedback.setVisible(false);
                         Socket socket = new Socket("45.93.249.139", 3459);
                         OutputStream outputStream = socket.getOutputStream();
                         PrintStream printStream = new PrintStream(outputStream);
@@ -170,19 +177,17 @@ public class Login extends JPanel {
                         printStream.println(name);
                         printStream.println(pw);
 
-                        /*
-                        OUTPUT:
-                        AccountType (STR)
-                        IsBanned (BOOL)
-                        BannedUntil (LONG)
-                        BannedReason (STR)
-                         */
-
                         boolean canLogin = Boolean.parseBoolean(bufferedReader.readLine());
 
                         if (canLogin) {
                             AccountHandler.AccountType accountType;
+                            //@TODO
+                            String channelID = "bufferedReader.readLine()";
+                            String accessToken = bufferedReader.readLine();
+                            String refreshToken = bufferedReader.readLine();
                             String accountTypeString = bufferedReader.readLine();
+                            int autoVIP_months = Integer.parseInt(bufferedReader.readLine());
+                            int autoVIP_streams = Integer.parseInt(bufferedReader.readLine());
                             boolean isBanned = Boolean.parseBoolean(bufferedReader.readLine());
                             long bannedUntil = 0;
                             String bannedReason = "";
@@ -198,30 +203,54 @@ public class Login extends JPanel {
                                 accountType = AccountHandler.AccountType.NORMAL;
                             }
 
-                            Account acc = new Account(username.getText(), pw, accountType, new BanData(isBanned, bannedUntil, bannedReason));
-                            accountHandler.setAccount(acc);
+                            AccountHandler.AccountType finalAccountType = accountType;
+                            long finalBannedUntil = bannedUntil;
+                            String finalBannedReason = bannedReason;
+                            new Thread(() -> {
+                                Account acc = new Account(username.getText(), pw, channelID, accessToken, refreshToken, finalAccountType, autoVIP_months, autoVIP_streams, new BanData(isBanned, finalBannedUntil, finalBannedReason));
 
-                            windowHandler.openWindow(WindowHandler.WindowType.DASHBOARD);
+                                if (!acc.getBanData().isActiveBan()) {
+                                    accountHandler.setAccount(acc);
+                                    windowHandler.openWindow(WindowHandler.WindowType.DASHBOARD);
+                                } else {
+                                    String remainingTime = "";
+                                    if (finalBannedUntil == -1) {
+                                        remainingTime = "Dauerhaft";
+                                    } else {
+                                        long remainingMillis = (finalBannedUntil - System.currentTimeMillis());
+                                        long days = remainingMillis / (24 * 60 * 60 * 1000);
+                                        remainingMillis %= (24 * 60 * 60 * 1000);
+                                        long hours = remainingMillis / (60 * 60 * 1000);
+                                        remainingMillis %= (60 * 60 * 1000);
+                                        long minutes = remainingMillis / (60 * 1000);
+                                        remainingMillis %= (60 * 1000);
+                                        long seconds = remainingMillis / 1000;
+
+                                        remainingTime = String.format("%d Tage, %dh %dmin %dsek", days, hours, minutes, seconds);
+                                    }
+                                    messageField.setText("<html><center>GESPERRT!<br><br>Dieser Account ist zurzeit gesperrt!<br>Grund: " + acc.getBanData().bannedReason + "<br>Verbleibende Zeit: " + remainingTime + "</center></html>");
+                                    messageField.setVisible(true);
+                                }
+                            }).start();
                         } else {
                             String reason = bufferedReader.readLine();
 
                             if (reason.equalsIgnoreCase("WRONG_DATA")) {
-                                announcement.setText("Ungültiger Username oder Passwort.");
+                                loginFeedback.setText("Ungültiger Username oder Passwort.");
+                                loginFeedback.setVisible(true);
+                                if (password.isFocusOwner()) {
+                                    password.setText("");
+                                } else {
+                                    password.setForeground(Color.GRAY);
+                                    password.setText("Passwort");
+                                    password.setEchoChar((char) 0);
+                                }
                             } else if (reason.equalsIgnoreCase("ALREADY_ONLINE")) {
-                                announcement.setText("Dieser Account ist bereits an einem anderen Standort angemeldet.");
+                                loginFeedback.setText("Dieser Account ist bereits an einem anderen Standort angemeldet.");
                             }
                         }
 
                     } catch (Exception ignored) {
-                        loginFeedback.setText("Ungültiger Username oder Passwort.");
-                        loginFeedback.setVisible(true);
-                        if (password.isFocusOwner()) {
-                            password.setText("");
-                        } else {
-                            password.setForeground(Color.GRAY);
-                            password.setText("Passwort");
-                            password.setEchoChar((char) 0);
-                        }
                     }
                 }
             }
@@ -231,7 +260,7 @@ public class Login extends JPanel {
         password.setForeground(Color.GRAY);
         password.setText("Passwort");
         password.setEchoChar((char) 0);
-        password.setFont(new Font("Oswald Medium", Font.BOLD, 20));
+        password.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
 
         messageField.setVisible(false);
         messageField.setForeground(Color.WHITE);
@@ -239,7 +268,7 @@ public class Login extends JPanel {
         messageField.setBackground(new Color(0xD03F3F));
         messageField.setHorizontalAlignment(SwingConstants.CENTER);
         messageField.setVerticalAlignment(SwingConstants.CENTER);
-        messageField.setFont(new Font("Oswald Medium", Font.PLAIN, 18));
+        messageField.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
 
         password.addFocusListener(new FocusListener() {
             @Override
@@ -321,5 +350,4 @@ public class Login extends JPanel {
         add(sidebarBackground);
         sidebarBackground.setBackground(new Color(0x113F67));
     }
-
 }

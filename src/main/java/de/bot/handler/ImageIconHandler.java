@@ -9,6 +9,7 @@ public class ImageIconHandler {
     public enum imageType {
 
         VIP_ICON(new ImageIcon(Main.class.getResource("/images/vip.png"))),
+        SOON_ICON(new ImageIcon(Main.class.getResource("/images/soon.png"))),
         UPDATE_NOTIFICATION(new ImageIcon(Main.class.getResource("/images/update.png"))),
         LOGO_NORMAL(new ImageIcon(Main.class.getResource("/images/logoNormal.png"))),
         LOGO_PREMIUM(new ImageIcon(Main.class.getResource("/images/logoPremium.png"))),

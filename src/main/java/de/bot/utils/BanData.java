@@ -2,7 +2,7 @@ package de.bot.utils;
 
 public class BanData {
 
-    public boolean activeBan;
+    private boolean activeBan;
     public long bannedUntil;
     public String bannedReason;
 
@@ -12,4 +12,7 @@ public class BanData {
         this.bannedReason = bannedReason;
     }
 
+    public boolean isActiveBan() {
+        return activeBan && (System.currentTimeMillis() < this.bannedUntil);
+    }
 }

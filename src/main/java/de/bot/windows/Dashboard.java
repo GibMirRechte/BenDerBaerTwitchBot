@@ -1,23 +1,29 @@
 package de.bot.windows;
 
+import de.bot.elements.RoundedJPasswordField;
+import de.bot.handler.AccountHandler;
 import de.bot.handler.ImageIconHandler;
 import de.bot.handler.UpdateHandler;
+import de.bot.utils.Account;
+import de.bot.utils.Announcement;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.io.PrintStream;
+import java.net.Socket;
 
 public class Dashboard extends JPanel {
 
     UpdateHandler updateHandler = UpdateHandler.getInstance();
+    AccountHandler accountHandler = AccountHandler.getInstance();
 
     public Dashboard() {
-        ImageIcon vipLabel = new ImageIcon(ImageIconHandler.imageType.VIP_ICON.imageIcon.getImage().getScaledInstance(37, 17, Image.SCALE_SMOOTH));
-        setPreferredSize(new Dimension(1280, 720));
+        Account account = accountHandler.getAccount();
+        Announcement an = updateHandler.getAnnouncement();
+
+        setPreferredSize(new Dimension(1025, 720));
         setLayout(null);
 
         try {
@@ -26,286 +32,189 @@ public class Dashboard extends JPanel {
             e.printStackTrace();
         }
 
-        JLabel soon3 = new JLabel("Coming Soon");
-        JLabel autoVip = new JLabel("AutoVIP");
-        JLabel autoShout = new JLabel("AutoShout");
-        JLabel logo = new JLabel(ImageIconHandler.imageType.LOGO_STAFF.imageIcon);
-        JLabel account = new JLabel("Account");
-        JLabel soon1 = new JLabel("Coming Soon");
-        JLabel support = new JLabel("Support");
-        JLabel copyright = new JLabel("Team");
-        JLabel discord = new JLabel("Discord");
-        JLabel streams = new JLabel("Streams");
-        JLabel logout = new JLabel("Logout");
+        JLabel announcement = new JLabel("<html><center>" + an.text + "</center></html>");
+        JLabel changePasswordTitle = new JLabel("Passwort ändern");
 
-        copyright.setBackground(new Color(0x113F67));
-        copyright.setForeground(Color.WHITE);
-        copyright.setHorizontalAlignment(SwingConstants.CENTER);
-        copyright.setVerticalAlignment(SwingConstants.CENTER);
-        copyright.setFont(new Font("Oswald Medium", Font.PLAIN, 15));
+        announcement.setBackground(Color.decode(an.color));
+        announcement.setForeground(Color.WHITE);
+        announcement.setOpaque(true);
+        announcement.setVisible(an.isActive);
+        announcement.setHorizontalAlignment(JLabel.CENTER);
+        if (an.typeID == 1) {
+            announcement.setIcon(ImageIconHandler.imageType.WARN_ICON.imageIcon);
+        } else {
+            announcement.setIcon(ImageIconHandler.imageType.INFO_ICON.imageIcon);
+        }
+        announcement.setHorizontalTextPosition(JLabel.RIGHT);
+        announcement.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
 
-        streams.setBackground(new Color(0x113F67));
-        streams.setForeground(Color.WHITE);
-        streams.setHorizontalAlignment(SwingConstants.CENTER);
-        streams.setVerticalAlignment(SwingConstants.CENTER);
-        streams.setFont(new Font("Oswald Medium", Font.PLAIN, 15));
+        announcement.setBounds(183, 112, 660, 40);
 
-        logout.setBackground(new Color(0x113F67));
-        logout.setForeground(Color.WHITE);
-        logout.setHorizontalAlignment(SwingConstants.CENTER);
-        logout.setVerticalAlignment(SwingConstants.CENTER);
-        logout.setFont(new Font("Oswald Medium", Font.PLAIN, 15));
+        JLabel welcomeText = new JLabel("Willkommen " + account.getName() + "!");
 
-        discord.setBackground(new Color(0x113F67));
-        discord.setForeground(Color.WHITE);
-        discord.setHorizontalAlignment(SwingConstants.CENTER);
-        discord.setVerticalAlignment(SwingConstants.CENTER);
-        discord.setFont(new Font("Oswald Medium", Font.PLAIN, 15));
+        RoundedJPasswordField resetPasswortCurrent = new RoundedJPasswordField(10, new Color(0x272727), false, 20, 40);
+        RoundedJPasswordField resetPasswortNewOne = new RoundedJPasswordField(10, new Color(0x272727), false, 20, 40);
+        RoundedJPasswordField resetPasswortNewTwo = new RoundedJPasswordField(10, new Color(0x272727), false, 20, 40);
 
-        soon1.setBackground(new Color(0x113F67));
-        soon1.setForeground(Color.WHITE);
-        soon1.setHorizontalAlignment(SwingConstants.CENTER);
-        soon1.setVerticalAlignment(SwingConstants.CENTER);
-        soon1.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
+        add(welcomeText);
+        add(announcement);
+        add(resetPasswortCurrent);
+        add(resetPasswortNewOne);
+        add(resetPasswortNewTwo);
+        add(changePasswordTitle);
 
-        support.setBackground(new Color(0x113F67));
-        support.setForeground(Color.WHITE);
-        support.setHorizontalAlignment(SwingConstants.CENTER);
-        support.setVerticalAlignment(SwingConstants.CENTER);
-        support.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
+        welcomeText.setBounds(20, 10, 600, 36);
+        changePasswordTitle.setBounds(45, 200, 300, 50);
 
-        soon3.setBackground(new Color(0x113F67));
-        soon3.setForeground(Color.WHITE);
-        soon3.setHorizontalAlignment(SwingConstants.CENTER);
-        soon3.setVerticalAlignment(SwingConstants.CENTER);
-        soon3.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
-
-        account.setBackground(new Color(0x113F67));
-        account.setForeground(Color.WHITE);
-        account.setHorizontalAlignment(SwingConstants.CENTER);
-        account.setVerticalAlignment(SwingConstants.CENTER);
-        account.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
-
-        autoVip.setBackground(new Color(0x113F67));
-        autoVip.setForeground(Color.WHITE);
-        autoVip.setHorizontalAlignment(SwingConstants.CENTER);
-        autoVip.setVerticalAlignment(SwingConstants.CENTER);
-        autoVip.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
-
-        autoShout.setBackground(new Color(0x113F67));
-        autoShout.setForeground(Color.WHITE);
-        autoShout.setHorizontalAlignment(SwingConstants.CENTER);
-        autoShout.setVerticalAlignment(SwingConstants.CENTER);
-        autoShout.setFont(new Font("Oswald Medium", Font.PLAIN, 36));
-
-        streams.addMouseListener(new MouseAdapter() {
+        resetPasswortCurrent.addFocusListener(new FocusListener() {
             @Override
-            public void mouseEntered(MouseEvent e) {
-                streams.setText("<html><u>Streams</u></html>");
-                streams.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            public void focusGained(FocusEvent e) {
+                if (resetPasswortCurrent.getText().equals("Aktuelles Passwort")) {
+                    resetPasswortCurrent.setText("");
+                    resetPasswortCurrent.setForeground(Color.WHITE);
+                    resetPasswortCurrent.setEchoChar((char) 0x2022);
+                }
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
-                streams.setText("Streams");
-                streams.setCursor(Cursor.getDefaultCursor());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                streams.setBackground(new Color(0x113F67));
+            public void focusLost(FocusEvent e) {
+                if (resetPasswortCurrent.getText().isEmpty()) {
+                    resetPasswortCurrent.setText("Aktuelles Passwort");
+                    resetPasswortCurrent.setForeground(Color.GRAY);
+                    resetPasswortCurrent.setEchoChar((char) 0);
+                }
             }
         });
-
-        logout.addMouseListener(new MouseAdapter() {
+        resetPasswortCurrent.addFocusListener(new FocusListener() {
             @Override
-            public void mouseEntered(MouseEvent e) {
-                logout.setText("<html><u>Logout</u></html>");
-                logout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            public void focusGained(FocusEvent e) {
+                if (resetPasswortCurrent.getText().equals("Neues Passwort")) {
+                    resetPasswortCurrent.setText("");
+                    resetPasswortCurrent.setForeground(Color.WHITE);
+                    resetPasswortCurrent.setEchoChar((char) 0x2022);
+                }
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
-                logout.setText("Logout");
-                logout.setCursor(Cursor.getDefaultCursor());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                logout.setBackground(new Color(0x113F67));
-            }
-        });
-
-        copyright.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                copyright.setText("<html><u>Team</u></html>");
-                copyright.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                copyright.setText("Team");
-                copyright.setCursor(Cursor.getDefaultCursor());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                copyright.setBackground(new Color(0x113F67));
+            public void focusLost(FocusEvent e) {
+                if (resetPasswortCurrent.getText().isEmpty()) {
+                    resetPasswortCurrent.setText("Neues Passwort");
+                    resetPasswortCurrent.setForeground(Color.GRAY);
+                    resetPasswortCurrent.setEchoChar((char) 0);
+                }
             }
         });
-
-        discord.addMouseListener(new MouseAdapter() {
+        resetPasswortNewOne.addFocusListener(new FocusListener() {
             @Override
-            public void mouseEntered(MouseEvent e) {
-                discord.setText("<html><u>Discord</u></html>");
-                discord.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            public void focusGained(FocusEvent e) {
+                if (resetPasswortNewOne.getText().equals("Neues Passwort")) {
+                    resetPasswortNewOne.setText("");
+                    resetPasswortNewOne.setForeground(Color.WHITE);
+                    resetPasswortNewOne.setEchoChar((char) 0x2022);
+                }
             }
 
             @Override
-            public void mouseExited(MouseEvent e) {
-                discord.setText("Discord");
-                discord.setCursor(Cursor.getDefaultCursor());
+            public void focusLost(FocusEvent e) {
+                if (resetPasswortNewOne.getText().isEmpty()) {
+                    resetPasswortNewOne.setText("Neues Passwort");
+                    resetPasswortNewOne.setForeground(Color.GRAY);
+                    resetPasswortNewOne.setEchoChar((char) 0);
+                }
+            }
+        });
+        resetPasswortNewTwo.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (resetPasswortNewTwo.getText().equals("Passwort wiederholen")) {
+                    resetPasswortNewTwo.setText("");
+                    resetPasswortNewTwo.setForeground(Color.WHITE);
+                    resetPasswortNewTwo.setEchoChar((char) 0x2022);
+                }
             }
 
             @Override
-            public void mousePressed(MouseEvent e) {
-                discord.setBackground(new Color(0x113F67));
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                try {
-                    Desktop.getDesktop().browse(new URI("https://discord.gg/r4FqG5E"));
-                } catch (IOException | URISyntaxException ex) {
-                    throw new RuntimeException(ex);
+            public void focusLost(FocusEvent e) {
+                if (resetPasswortNewTwo.getText().isEmpty()) {
+                    resetPasswortNewTwo.setText("Passwort wiederholen");
+                    resetPasswortNewTwo.setForeground(Color.GRAY);
+                    resetPasswortNewTwo.setEchoChar((char) 0);
                 }
             }
         });
 
-        support.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                support.setText("<html><u>Support</u></html>");
-                support.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
+        changePasswordTitle.setForeground(Color.WHITE);
+        changePasswordTitle.setHorizontalAlignment(SwingConstants.LEFT);
+        changePasswordTitle.setVerticalAlignment(SwingConstants.CENTER);
+        changePasswordTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                support.setText("Support");
-                support.setCursor(Cursor.getDefaultCursor());
-            }
+        welcomeText.setForeground(Color.WHITE);
+        welcomeText.setHorizontalAlignment(SwingConstants.LEFT);
+        welcomeText.setVerticalAlignment(SwingConstants.CENTER);
+        welcomeText.setFont(new Font("Trebuchet MS", Font.PLAIN, 36));
 
-            @Override
-            public void mousePressed(MouseEvent e) {
-                support.setBackground(new Color(0x113F67));
-            }
-        });
+        resetPasswortCurrent.setVisible(true);
+        resetPasswortCurrent.setBackground(new Color(0x464646));
+        resetPasswortCurrent.setForeground(Color.GRAY);
+        resetPasswortCurrent.setText("Aktuelles Passwort");
+        resetPasswortCurrent.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
+        resetPasswortCurrent.setBounds(45, 250, 300, 50);
+        resetPasswortCurrent.setEchoChar((char) 0);
 
-        autoShout.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                autoShout.setText("<html><u>AutoShout</u></html>");
-                autoShout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
+        resetPasswortNewOne.setVisible(true);
+        resetPasswortNewOne.setBackground(new Color(0x464646));
+        resetPasswortNewOne.setForeground(Color.GRAY);
+        resetPasswortNewOne.setText("Neues Passwort");
+        resetPasswortNewOne.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
+        resetPasswortNewOne.setBounds(45, 310, 300, 50);
+        resetPasswortNewOne.setEchoChar((char) 0);
 
-            @Override
-            public void mouseExited(MouseEvent e) {
-                autoShout.setText("AutoShout");
-                autoShout.setCursor(Cursor.getDefaultCursor());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                autoShout.setBackground(new Color(0x113F67));
-            }
-        });
-
-        autoVip.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                autoVip.setText("<html><u>AutoVIP</u></html>");
-                autoVip.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                autoVip.setText("AutoVIP");
-                autoVip.setCursor(Cursor.getDefaultCursor());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                autoVip.setBackground(new Color(0x113F67));
-            }
-        });
-
-        account.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                account.setText("<html><u>Account</u></html>");
-                account.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                account.setText("Account");
-                account.setCursor(Cursor.getDefaultCursor());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                account.setBackground(new Color(0x113F67));
-            }
-        });
-
-        autoVip.setIcon(vipLabel);
-        autoVip.setVerticalTextPosition(SwingConstants.TOP);
-        autoVip.setHorizontalTextPosition(SwingConstants.LEADING);
-        autoVip.setIconTextGap(5);
-
-        if (updateHandler.hasNewUpdate()) {
-            JLabel updateAvailable = new JLabel(ImageIconHandler.imageType.UPDATE_NOTIFICATION.imageIcon);
-            add(updateAvailable);
-            updateAvailable.setBounds(427, 177, 685, 365);
-        }
-
-        add(copyright);
-        add(logout);
-        add(discord);
-        add(autoVip);
-        add(autoShout);
-        add(logo);
-        add(account);
-        add(soon1);
-        add(streams);
-        add(support);
-        add(soon3);
-
-        copyright.setBounds(66, 680, 58, 30);
-        streams.setBounds(127, 680, 58, 30);
-        logout.setBounds(193, 680, 58, 30);
-        discord.setBounds(5, 680, 58, 30);
-        autoVip.setBounds(5, 360, 245, 70);
-        autoShout.setBounds(5, 280, 245, 70);
-        logo.setBounds(5, 10, 245, 180);
-        account.setBounds(5, 200, 245, 70);
-        soon1.setBounds(5, 520, 245, 70);
-        support.setBounds(5, 600, 245, 70);
-        soon3.setBounds(5, 440, 245, 70);
-
-        JLabel sidebarBackground = new JLabel("");
-        sidebarBackground.setBounds(0, 0, 255, 720);
-        sidebarBackground.setOpaque(true);
-        add(sidebarBackground);
-        sidebarBackground.setBackground(new Color(0x113F67));
+        resetPasswortNewTwo.setVisible(true);
+        resetPasswortNewTwo.setBackground(new Color(0x464646));
+        resetPasswortNewTwo.setForeground(Color.GRAY);
+        resetPasswortNewTwo.setText("Passwort wiederholen");
+        resetPasswortNewTwo.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
+        resetPasswortNewTwo.setBounds(45, 370, 300, 50);
+        resetPasswortNewTwo.setEchoChar((char) 0);
     }
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame("TwitchBot");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.getContentPane().add(new Dashboard()).setBackground(new Color(0x272727));
-        frame.setVisible(true);
-        frame.pack();
+        try {
+            Socket socket = new Socket("127.0.0.2", 1336);
+            PrintStream printStream = new PrintStream(socket.getOutputStream());
+            String text = """
+                    # Allgemeines #
+                    - Neue Schriftart im Haus! Sie sieht nicht nur schick aus, sondern verbessert auch die Kompatibilität.
+                    - Die Sidebar hat sich schick gemacht und ist jetzt auf kommende Updates vorbereitet.
+                    - Im Sidebar-Menü haben wir den Team-Reiter durch "Changes" ersetzt.
+                    - Du wirst es nicht übersehen: Der Update-Hinweis erstrahlt im neuen Design!
+                    - Natürlich haben wir die Sicherheit nicht vergessen – einige sicherheitstechnische Änderungen wurden vorgenommen!
+                                    
+                    # AutoShout ist da! #
+                    - Du kannst jetzt automatische Shoutouts an bestimmte User senden, wenn sie den Stream betreten.
+                                    
+                    # Anmeldung (Login) #
+                    - Keine Mini-Hänger mehr nach einem erfolgreichen Login – alles läuft jetzt butterweich!
+                    - Du kannst jetzt nicht nur einloggen, sondern auch registrieren!
+                    - Keine Sorgen mehr um gesperrte Accounts – wir haben klare Hinweise hinzugefügt!.
+                    - Wir haben ein paar kleine, verwirrende Fehler beseitigt. Nichts soll zwischen dir und deinem Stream-Spaß stehen!
+                    - Logindaten können ab sofort gespeichert werden. Bequemlichkeit, wir kommen!
+                                    
+                    # Dashboard #
+                    - Ab jetzt kannst du dein Passwort eigenhändig ändern. Du hast das Ruder in der Hand!
+                    - Hol dir die Neuigkeiten direkt ins Dashboard: Der News-Banner informiert dich jetzt über aktuelle Geschehnisse!
+                                    
+                    # AutoVIP #
+                    - Mal keine VIP-Behandlung? Kein Problem! AutoVIP deaktivieren – du hast die Kontrolle!
+                    - Kompaktere Slider, genauso leistungsstark!
+                    - Feinabstimmung leicht gemacht: Die Slider zeigen jetzt Einzelschritte für präzise Optimierung.
+                    - Die neue Whitelist verleiht VIP-Status unabhängig von Aktivität!
+                    - Die Blacklist verhindert VIP-Verleihungen. Aktuelle VIPs auf der Blacklist verabschieden sich leider.""";
+
+            printStream.println(text);
+            socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

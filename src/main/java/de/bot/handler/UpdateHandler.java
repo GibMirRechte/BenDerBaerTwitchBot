@@ -11,7 +11,7 @@ import java.nio.channels.ReadableByteChannel;
 
 public class UpdateHandler {
 
-    private final String currentVersion = "0.1";
+    private final String currentVersion = "0.0.1";
     private boolean newUpdateAvailable = false;
     static UpdateHandler instance;
     private String newestVersion = "";
@@ -30,7 +30,7 @@ public class UpdateHandler {
 
         if (announcement == null) {
             try {
-                Socket socket = new Socket("", 3428);
+                Socket socket = new Socket("45.93.249.139", 3459);
                 OutputStream outputStream = socket.getOutputStream();
                 PrintStream printStream = new PrintStream(outputStream);
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -55,20 +55,24 @@ public class UpdateHandler {
         return currentVersion;
     }
 
-    private void checkForUpdate() {
-        try (Socket socket = new Socket("", 3428)) {
+    public void checkForUpdate() {
+        try (Socket socket = new Socket("45.93.249.139", 3459)) {
             OutputStream outputStream = socket.getOutputStream();
             PrintStream printStream = new PrintStream(outputStream);
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             printStream.println("GET_VERSION");
-            printStream.println("TwitchTool");
 
             newestVersion = bufferedReader.readLine();
             newUpdateDownloadLink = bufferedReader.readLine();
-
             if (!currentVersion.equalsIgnoreCase(newestVersion)) {
                 newUpdateAvailable = true;
+                new Thread(() -> {
+                    try {
+                        downloadNewestVersion();
+                    } catch (IOException e) {
+                    }
+                }).start();
             }
         } catch (Exception ignored) {
         }

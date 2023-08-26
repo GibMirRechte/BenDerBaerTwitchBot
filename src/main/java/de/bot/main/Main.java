@@ -1,8 +1,5 @@
 package de.bot.main;
 
-import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
-import com.github.twitch4j.TwitchClient;
-import com.github.twitch4j.TwitchClientBuilder;
 import com.github.twitch4j.helix.domain.FollowList;
 import com.netflix.hystrix.HystrixCommand;
 import de.bot.handler.UpdateHandler;
@@ -10,6 +7,8 @@ import de.bot.handler.WindowHandler;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
+
+import java.time.LocalDate;
 
 public class Main {
 
@@ -34,6 +33,15 @@ public class Main {
     public static void main(String[] args) {
         //TwitchClient benderbaer = TwitchClientBuilder.builder().withEnableHelix(Boolean.TRUE).withClientId("gp762nuuoqcoxypju8c569th9wz7q5").withChatAccount(new OAuth2Credential("twitch", accessToken)).withEnableChat(Boolean.TRUE).build();
 
-        windowHandler.openWindow(WindowHandler.WindowType.LOGIN);
+        System.out.println(LocalDate.now().minusMonths(12));
+        System.out.println(LocalDate.now());
+        System.out.println(LocalDate.parse("2022-09-24").minusDays(2));
+        updateHandler.checkForUpdate();
+
+        if (updateHandler.hasNewUpdate()) {
+            windowHandler.openWindow(WindowHandler.WindowType.UPDATE);
+        } else {
+            windowHandler.openWindow(WindowHandler.WindowType.LOGIN);
+        }
     }
 }

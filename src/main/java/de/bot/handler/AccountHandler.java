@@ -1,6 +1,11 @@
 package de.bot.handler;
 
 import de.bot.utils.Account;
+import de.bot.utils.BanData;
+
+import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 
 public class AccountHandler {
 
@@ -8,10 +13,58 @@ public class AccountHandler {
     static AccountHandler instance;
 
     public enum AccountType {
-        ADMIN, STAFF, PREMIUM, NORMAL;
+        ADMIN(new Color(0xBE0000), "Admin"),
+        STAFF(new Color(0xFE3F3F), "Team"),
+        PREMIUM(new Color(0xEFC210), "Premium"),
+        NORMAL(new Color(0x5D5D5D), "User");
+
+        public final Color badgeColor;
+        public final String badgeName;
+
+        AccountType(Color badgeColor, String badgeName) {
+            this.badgeColor = badgeColor;
+            this.badgeName = badgeName;
+        }
     }
 
+    public Image getBadge(AccountType accountType) {
+        BufferedImage tempImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2dTemp = tempImage.createGraphics();
+        g2dTemp.setFont(new Font("Trebuchet MS", Font.BOLD, 16));
+        FontMetrics fm = g2dTemp.getFontMetrics();
+        int textWidth = fm.stringWidth(accountType.badgeName);
+        int textHeight = fm.getHeight();
+        g2dTemp.dispose();
+
+        int width = textWidth + 20;
+        int height = 20;
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = image.createGraphics();
+
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(0, 0, width, height, 20, 20);
+        g2d.setColor(accountType.badgeColor);
+        g2d.fill(roundedRectangle);
+
+        g2d.setColor(Color.WHITE);
+        g2d.setFont(new Font("Trebuchet MS", Font.BOLD, 16));
+
+        int x = (width - textWidth) / 2;
+        int y = (height - textHeight) / 2 + fm.getAscent();
+
+        g2d.drawString(accountType.badgeName, x, y);
+        g2d.dispose();
+
+        return image;
+    }
+
+
     public Account getAccount() {
+        if (account == null) {
+            return new Account("GibMirRechte", "Max2005Max", "", "T", "T", AccountType.ADMIN, 0, 0, new BanData(false, 0, ""));
+        }
         return account;
     }
 
@@ -25,8 +78,8 @@ public class AccountHandler {
         return instance;
     }
 
-    public void setAccount(Account account) {
-        account = account;
+    public void setAccount(Account acc) {
+        account = acc;
     }
 
 }
