@@ -1,7 +1,5 @@
 package de.bot.utils;
 
-import de.bot.handler.UpdateHandler;
-
 public class Announcement {
 
     public boolean isActive;
