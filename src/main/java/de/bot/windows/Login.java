@@ -52,6 +52,7 @@ public class Login extends JPanel {
         JLabel login = new JLabel("Login");
         JLabel loginButton = new JLabel("Anmelden");
         JLabel messageField = new JLabel("<html><center>GESPERRT!<br><br>Dieser Account ist zurzeit gesperrt!<br>Grund: Nicht angegeben<br>Dauer: Dauerhaft</center></html>");
+        JCheckBox saveData = new JCheckBox("<html>Logindaten<br>speichern</html>");
         RoundedJPasswordField password = new RoundedJPasswordField(10, new Color(0x272727), true, 40, 40);
         RoundedJTextField username = new RoundedJTextField(10, new Color(0x272727), true, 40, 40);
 
@@ -99,6 +100,7 @@ public class Login extends JPanel {
         username.setForeground(Color.GRAY);
         username.setText("Benutzername");
         username.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
+
 
         ((AbstractDocument) username.getDocument()).setDocumentFilter(new DocumentFilter() {
             @Override
@@ -211,6 +213,11 @@ public class Login extends JPanel {
 
                                 if (!acc.getBanData().isActiveBan()) {
                                     accountHandler.setAccount(acc);
+                                    accountHandler.setConfig(AccountHandler.ConfigType.LOGIN_SAVEDATA, saveData.isSelected() + "");
+                                    if (saveData.isSelected()) {
+                                        accountHandler.setConfig(AccountHandler.ConfigType.LOGIN_USERNAME, username.getText());
+                                        accountHandler.setConfig(AccountHandler.ConfigType.LOGIN_PASSWORD, password.getText());
+                                    }
                                     windowHandler.openWindow(WindowHandler.WindowType.DASHBOARD);
                                 } else {
                                     String remainingTime = "";
@@ -261,6 +268,22 @@ public class Login extends JPanel {
         password.setText("Passwort");
         password.setEchoChar((char) 0);
         password.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
+
+        saveData.setForeground(Color.WHITE);
+        saveData.setOpaque(false);
+        saveData.setVisible(true);
+        saveData.setHorizontalAlignment(JLabel.CENTER);
+        saveData.setHorizontalTextPosition(JLabel.RIGHT);
+        saveData.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+
+        if (Boolean.parseBoolean(accountHandler.getData(AccountHandler.ConfigType.LOGIN_SAVEDATA))) {
+            saveData.setSelected(true);
+            username.setText(accountHandler.getData(AccountHandler.ConfigType.LOGIN_USERNAME));
+            username.setForeground(Color.WHITE);
+            password.setText(accountHandler.getData(AccountHandler.ConfigType.LOGIN_PASSWORD));
+            password.setEchoChar((char) 0x2022);
+            password.setForeground(Color.WHITE);
+        }
 
         messageField.setVisible(false);
         messageField.setForeground(Color.WHITE);
@@ -333,6 +356,7 @@ public class Login extends JPanel {
         add(username);
         add(loginFeedback);
         add(messageField);
+        add(saveData);
 
         announcement.setBounds(438, 112, 660, 40);
         loginFeedback.setBounds(455, 187, 625, 40);
@@ -343,6 +367,7 @@ public class Login extends JPanel {
         username.setBounds(438, 227, 660, 75);
         messageField.setBounds(520, 532, 500, 150);
         password.setBounds(438, 327, 660, 75);
+        saveData.setBounds(450, 427, 150, 75);
 
         JLabel sidebarBackground = new JLabel("");
         sidebarBackground.setBounds(0, 0, 255, 720);

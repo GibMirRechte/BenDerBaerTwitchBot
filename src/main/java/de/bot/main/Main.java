@@ -2,6 +2,7 @@ package de.bot.main;
 
 import com.github.twitch4j.helix.domain.FollowList;
 import com.netflix.hystrix.HystrixCommand;
+import de.bot.handler.AccountHandler;
 import de.bot.handler.UpdateHandler;
 import de.bot.handler.WindowHandler;
 import feign.Headers;
@@ -14,6 +15,7 @@ public class Main {
 
     static UpdateHandler updateHandler = new UpdateHandler();
     static final WindowHandler windowHandler = new WindowHandler();
+    static final AccountHandler accountHandler = AccountHandler.getInstance();
 
     @RequestLine("GET /users/follows?from_id={from_id}&to_id={to_id}&after={after}&first={first}")
     @Headers("Authorization: Bearer {token}")
@@ -32,6 +34,7 @@ public class Main {
 
     public static void main(String[] args) {
         //TwitchClient benderbaer = TwitchClientBuilder.builder().withEnableHelix(Boolean.TRUE).withClientId("gp762nuuoqcoxypju8c569th9wz7q5").withChatAccount(new OAuth2Credential("twitch", accessToken)).withEnableChat(Boolean.TRUE).build();
+        accountHandler.loadConfig();
 
         System.out.println(LocalDate.now().minusMonths(12));
         System.out.println(LocalDate.now());

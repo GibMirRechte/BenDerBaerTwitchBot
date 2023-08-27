@@ -6,6 +6,9 @@ import de.bot.utils.BanData;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AccountHandler {
 
@@ -77,6 +80,78 @@ public class AccountHandler {
             instance = new AccountHandler();
         return instance;
     }
+
+    public enum ConfigType {
+        LOGIN_SAVEDATA("login.savedata"),
+        LOGIN_USERNAME("login.username"),
+        LOGIN_PASSWORD("login.password");
+
+        public final String index;
+
+        ConfigType(String index) {
+            this.index = index;
+        }
+    }
+
+    private final String filePath = System.getenv("APPDATA") + "\\TwitchTool\\config.txt";
+    ;
+    private final Map<String, String> configMap = new HashMap<>();
+
+    public void loadConfig() {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] keyValue = line.split("=");
+                if (keyValue.length == 2) {
+                    String key = keyValue[0];
+                    String value = keyValue[1];
+                    configMap.put(key, value);
+                }
+            }
+        } catch (IOException e) {
+            createConfig();
+        }
+    }
+
+    public String getData(ConfigType configType) {
+        if (configMap.isEmpty()) loadConfig();
+        return configMap.get(configType.index);
+    }
+
+    public void createConfig() {
+        configMap.put("login.savedata", "false");
+        configMap.put("login.username", "null");
+        configMap.put("login.password", "null");
+        saveConfig();
+    }
+
+    public void setConfig(ConfigType configType, String value) {
+        configMap.put(configType.index, value);
+        saveConfig();
+    }
+
+    private void saveConfig() {
+        File file = new File(filePath);
+        try {
+            File directory = new File("C:\\Users\\User\\AppData\\Roaming\\TwitchTool");
+            if (!directory.exists()) {
+                directory.mkdirs();
+            }
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+        } catch (Exception ignored) {
+        }
+        try (FileWriter fileWriter = new FileWriter(file)) {
+            for (Map.Entry<String, String> entry : configMap.entrySet()) {
+                fileWriter.write(entry.getKey() + "=" + entry.getValue() + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public void setAccount(Account acc) {
         account = acc;
