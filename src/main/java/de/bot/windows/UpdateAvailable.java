@@ -2,7 +2,6 @@ package de.bot.windows;
 
 import de.bot.handler.AccountHandler;
 import de.bot.handler.ImageIconHandler;
-import de.bot.handler.WindowHandler;
 import de.bot.utils.Account;
 
 import javax.swing.*;
@@ -51,9 +50,5 @@ public class UpdateAvailable extends JPanel {
 
         add(message);
 
-    }
-
-    public static void main(String[] args) {
-        WindowHandler.getInstance().openWindow(WindowHandler.WindowType.UPDATE);
     }
 }
