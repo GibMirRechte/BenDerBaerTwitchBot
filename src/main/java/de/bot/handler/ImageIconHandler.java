@@ -21,8 +21,4 @@ public class ImageIconHandler {
             this.imageIcon = imageIcon;
         }
     }
-
-    public ImageIcon getImageIcon(imageType imageType) {
-        return imageType.imageIcon;
-    }
 }
