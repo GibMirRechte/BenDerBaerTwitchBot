@@ -341,12 +341,6 @@ public class Login extends JPanel {
             }
         });
 
-        if (updateHandler.hasNewUpdate()) {
-            JLabel updateAvailable = new JLabel(ImageIconHandler.imageType.UPDATE_NOTIFICATION.imageIcon);
-            add(updateAvailable);
-            updateAvailable.setBounds(427, 177, 685, 365);
-        }
-
         add(announcement);
         add(register);
         add(loginButton);

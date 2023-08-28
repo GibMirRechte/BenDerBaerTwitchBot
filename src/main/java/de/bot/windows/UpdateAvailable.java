@@ -2,6 +2,7 @@ package de.bot.windows;
 
 import de.bot.handler.AccountHandler;
 import de.bot.handler.ImageIconHandler;
+import de.bot.handler.WindowHandler;
 import de.bot.utils.Account;
 
 import javax.swing.*;
@@ -13,12 +14,8 @@ public class UpdateAvailable extends JPanel {
 
     public UpdateAvailable() {
         Account account = accountHandler.getAccount();
-        setPreferredSize(new Dimension(1025, 720));
+        setPreferredSize(new Dimension(1280, 720));
         setLayout(null);
-
-        JLabel jcomp2 = new JLabel(ImageIconHandler.imageType.UPDATE_NOTIFICATION.imageIcon);
-        jcomp2.setVisible(true);
-        add(jcomp2);
 
         JLabel logo;
 
@@ -34,7 +31,6 @@ public class UpdateAvailable extends JPanel {
         add(logo);
 
         logo.setBounds(5, 10, 245, 180);
-        jcomp2.setBounds(425, 177, 685, 365);
 
         JLabel sidebarBackground = new JLabel("");
         sidebarBackground.setBounds(0, 0, 255, 720);
@@ -42,5 +38,22 @@ public class UpdateAvailable extends JPanel {
         add(sidebarBackground);
         sidebarBackground.setBackground(new Color(0x113F67));
 
+        JLabel message = new JLabel("<html><center><b>HINWEIS</b><br><br>Ein Update ist verfügbar!<br>Bitte starte das Programm neu.</center></html>");
+
+        message.setBackground(new Color(0xFFD03F3F));
+        message.setOpaque(true);
+        message.setForeground(Color.WHITE);
+        message.setHorizontalAlignment(SwingConstants.CENTER);
+        message.setVerticalAlignment(SwingConstants.CENTER);
+        message.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+
+        message.setBounds(438, 185, 660, 350);
+
+        add(message);
+
+    }
+
+    public static void main(String[] args) {
+        WindowHandler.getInstance().openWindow(WindowHandler.WindowType.UPDATE);
     }
 }
