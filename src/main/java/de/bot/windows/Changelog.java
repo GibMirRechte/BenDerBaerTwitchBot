@@ -50,7 +50,7 @@ public class Changelog extends JPanel {
         add(announcement);
 
         JLabel title = new JLabel("Changelog v0.2");
-        JLabel autor = new JLabel("<html>Gespostet von <font color=red>GibMirRechte</font></html>");
+        JLabel autor = new JLabel("<html>Gepostet von <font color=red>GibMirRechte</font></html>");
         JLabel changelog = new JLabel();
         add(title);
         add(changelog);

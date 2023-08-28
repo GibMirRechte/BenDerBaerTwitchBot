@@ -26,7 +26,8 @@ public class Account {
         this.channelID = channelID;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.accountType = accountType;
+        //this.accountType = accountType;
+        this.accountType = AccountHandler.AccountType.NORMAL;
         this.autoVIP_monthsIntervall = autoVIP_monthsIntervall;
         this.autoVIP_streams = autoVIP_streams;
         this.banData = banData;

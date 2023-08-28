@@ -13,9 +13,17 @@ public class WindowHandler {
     static JFrame frame = new JFrame();
     static WindowHandler instance;
     UpdateHandler updateHandler = UpdateHandler.getInstance();
+    AccountHandler accountHandler = AccountHandler.getInstance();
 
     public enum WindowType {
-        DASHBOARD, LOGIN, AUTOVIP, UPDATE, CHANGELOG;
+        DASHBOARD(false), LOGIN(false), AUTOVIP(true), UPDATE(false), CHANGELOG(false),
+        NOT_ALLOWED(false), AUTOSHOUT(false);
+
+        public boolean onlyVIP;
+
+        WindowType(boolean onlyVIP) {
+            this.onlyVIP = onlyVIP;
+        }
     }
 
     public static WindowHandler getInstance() {
@@ -35,6 +43,14 @@ public class WindowHandler {
 
         if (updateHandler.hasNewUpdate())
             windowType = WindowType.UPDATE;
+
+        if (accountHandler.getAccount() == null) {
+            windowType = WindowType.LOGIN;
+        } else {
+            if (accountHandler.getAccount().getAccountType().equals(AccountHandler.AccountType.NORMAL) && windowType.onlyVIP) {
+                windowType = WindowType.NOT_ALLOWED;
+            }
+        }
 
         Sidebar sidebar = new Sidebar();
         sidebar.setVisible(true);
@@ -64,10 +80,16 @@ public class WindowHandler {
                 frame.getContentPane().add(new UpdateAvailable()).setBackground(new Color(0x272727));
                 break;
             case CHANGELOG:
-                currentWindow = WindowType.UPDATE;
+                currentWindow = WindowType.CHANGELOG;
                 frame.getContentPane().add(sidebar, BorderLayout.WEST);
                 frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Changelog");
                 frame.getContentPane().add(new Changelog()).setBackground(new Color(0x272727));
+                break;
+            case NOT_ALLOWED:
+                currentWindow = WindowType.NOT_ALLOWED;
+                frame.getContentPane().add(sidebar, BorderLayout.WEST);
+                frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Verboten");
+                frame.getContentPane().add(new NotAllowed()).setBackground(new Color(0x272727));
                 break;
             default:
                 break;
