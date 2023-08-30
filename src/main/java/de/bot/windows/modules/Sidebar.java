@@ -159,7 +159,7 @@ public class Sidebar extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                streams.setBackground(new Color(0x113F67));
+                windowHandler.openWindow(WindowHandler.WindowType.STREAMS);
             }
         });
 

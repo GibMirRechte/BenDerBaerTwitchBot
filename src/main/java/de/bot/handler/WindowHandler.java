@@ -17,7 +17,7 @@ public class WindowHandler {
 
     public enum WindowType {
         DASHBOARD(false), LOGIN(false), AUTOVIP(true), UPDATE(false), CHANGELOG(false),
-        NOT_ALLOWED(false), AUTOSHOUT(false);
+        NOT_ALLOWED(false), AUTOSHOUT(false), STREAMS(false);
 
         public boolean onlyVIP;
 
@@ -90,6 +90,12 @@ public class WindowHandler {
                 frame.getContentPane().add(sidebar, BorderLayout.WEST);
                 frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Verboten");
                 frame.getContentPane().add(new NotAllowed()).setBackground(new Color(0x272727));
+                break;
+            case STREAMS:
+                currentWindow = WindowType.STREAMS;
+                frame.getContentPane().add(sidebar, BorderLayout.WEST);
+                frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Featured Streams");
+                frame.getContentPane().add(new Streams()).setBackground(new Color(0x272727));
                 break;
             default:
                 break;
