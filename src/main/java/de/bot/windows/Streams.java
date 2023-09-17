@@ -1,7 +1,5 @@
 package de.bot.windows;
 
-import de.bot.handler.WindowHandler;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
@@ -62,10 +60,6 @@ public class Streams extends JPanel {
 
         hakuInu.setBounds(220, 10, 200, 250);
         hakuInu.addMouseListener(addMouseAdapter(hakuInu, "hakuInu"));*/
-    }
-
-    public static void main(String[] args) {
-        WindowHandler.getInstance().openWindow(WindowHandler.WindowType.STREAMS);
     }
 
     public MouseAdapter addMouseAdapter(JLabel jLabel, String twitchName) {

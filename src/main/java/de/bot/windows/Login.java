@@ -6,9 +6,7 @@ import de.bot.handler.AccountHandler;
 import de.bot.handler.ImageIconHandler;
 import de.bot.handler.UpdateHandler;
 import de.bot.handler.WindowHandler;
-import de.bot.utils.Account;
-import de.bot.utils.Announcement;
-import de.bot.utils.BanData;
+import de.bot.utils.*;
 
 import javax.swing.*;
 import javax.swing.text.AbstractDocument;
@@ -182,14 +180,20 @@ public class Login extends JPanel {
                         boolean canLogin = Boolean.parseBoolean(bufferedReader.readLine());
 
                         if (canLogin) {
+                            loginFeedback.setText("Session wird erstellt...");
+                            loginFeedback.setVisible(true);
+                            loginFeedback.setBackground(new Color(0x05A489));
+
                             AccountHandler.AccountType accountType;
-                            //@TODO
-                            String channelID = "bufferedReader.readLine()";
+                            String channelID = bufferedReader.readLine();
                             String accessToken = bufferedReader.readLine();
                             String refreshToken = bufferedReader.readLine();
                             String accountTypeString = bufferedReader.readLine();
                             int autoVIP_months = Integer.parseInt(bufferedReader.readLine());
                             int autoVIP_streams = Integer.parseInt(bufferedReader.readLine());
+                            String autoVIP_whitelist = bufferedReader.readLine();
+                            String autoVIP_blacklist = bufferedReader.readLine();
+                            String autoShout_userList = bufferedReader.readLine();
                             boolean isBanned = Boolean.parseBoolean(bufferedReader.readLine());
                             long bannedUntil = 0;
                             String bannedReason = "";
@@ -209,9 +213,10 @@ public class Login extends JPanel {
                             long finalBannedUntil = bannedUntil;
                             String finalBannedReason = bannedReason;
                             new Thread(() -> {
-                                Account acc = new Account(username.getText(), pw, channelID, accessToken, refreshToken, finalAccountType, autoVIP_months, autoVIP_streams, new BanData(isBanned, finalBannedUntil, finalBannedReason));
+                                Account acc = new Account(username.getText(), pw, channelID, accessToken, refreshToken, finalAccountType, new AutoVIPSettings(autoVIP_months, autoVIP_streams, autoVIP_whitelist, autoVIP_blacklist), new AutoShoutSettings(autoShout_userList), new BanData(isBanned, finalBannedUntil, finalBannedReason));
 
                                 if (!acc.getBanData().isActiveBan()) {
+
                                     accountHandler.setAccount(acc);
                                     accountHandler.setConfig(AccountHandler.ConfigType.LOGIN_SAVEDATA, saveData.isSelected() + "");
                                     if (saveData.isSelected()) {
@@ -352,7 +357,7 @@ public class Login extends JPanel {
         add(messageField);
         add(saveData);
 
-        announcement.setBounds(438, 112, 660, 40);
+        announcement.setBounds(438, 75, 660, 40);
         loginFeedback.setBounds(455, 187, 625, 40);
         loginButton.setBounds(645, 427, 250, 75);
         register.setBounds(5, 280, 245, 70);

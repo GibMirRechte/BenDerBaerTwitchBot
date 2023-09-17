@@ -8,6 +8,8 @@ import de.bot.utils.Announcement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.OutputStream;
@@ -47,7 +49,7 @@ public class AutoVIP extends JPanel {
 
         Account acc = accountHandler.getAccount();
 
-        JLabel welcomeText = new JLabel("AutoVIP Einstellungen");
+        JLabel title = new JLabel("AutoVIP Einstellungen");
         JLabel monthsTitle = new JLabel("Aktivitäts Voraussetzung");
         JLabel monthsUndertitle = new JLabel("Gebe an, wie lange ein Tracking-Intervall gültig ist (In Monaten)");
         JLabel streamsTitle = new JLabel("Benötigte Streamaktivität");
@@ -56,13 +58,19 @@ public class AutoVIP extends JPanel {
         JSlider months = new JSlider(1, 12);
         JSlider streamSlider = new JSlider(10, 60);
         JLabel saveFeedback = new JLabel("Die Einstellungen wurden erfolgreich gespeichert.");
+        JLabel whitelistTitle = new JLabel("Whitelist");
+        JLabel whitelistUndertitle = new JLabel("User erhalten VIP, unabhängig der Aktivität. (Mit Komma trennen)");
+        JTextArea whitelistArea = new JTextArea("");
+        JLabel blacklistTitle = new JLabel("Blacklist");
+        JLabel blacklistUndertitle = new JLabel("User erhalten niemals VIP. (Mit Komma trennen)");
+        JTextArea blacklistArea = new JTextArea("");
 
         months.setBackground(new Color(0x113F67));
         months.setForeground(Color.WHITE);
         months.setFont(new Font("Trebuchet MS", Font.PLAIN, 15));
         months.setMinorTickSpacing(0);
         months.setMajorTickSpacing(1);
-        months.setValue(acc.getAutoVIP_months());
+        months.setValue(acc.getAutoVIPSettings().getMonths());
         months.setPaintTicks(true);
         months.setPaintLabels(true);
 
@@ -100,11 +108,48 @@ public class AutoVIP extends JPanel {
                     printStream.println(acc.getName());
                     printStream.println(months.getValue());
                     printStream.println(streamSlider.getValue());
+                    printStream.println(whitelistArea.getText().replace("ExampleUser1,ExampleUser2", ""));
+                    printStream.println(blacklistArea.getText().replace("ExampleUser1,ExampleUser2", ""));
 
                     saveFeedback.setVisible(true);
-                    accountHandler.getAccount().updateAutoVIPSettings(months.getValue(), streamSlider.getValue());
+                    acc.getAutoVIPSettings().updateAutoVIPSettings(months.getValue(), streamSlider.getValue(), whitelistArea.getText().replace("ExampleUser1,ExampleUser2", ""), blacklistArea.getText().replace("ExampleUser1,ExampleUser2", ""));
                 } catch (Exception ignored) {
+                }
+            }
+        });
 
+        whitelistArea.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (whitelistArea.getText().equals("ExampleUser1,ExampleUser2")) {
+                    whitelistArea.setText("");
+                    whitelistArea.setForeground(Color.WHITE);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (whitelistArea.getText().isEmpty()) {
+                    whitelistArea.setText("ExampleUser1,ExampleUser2");
+                    whitelistArea.setForeground(Color.GRAY);
+                }
+            }
+        });
+
+        blacklistArea.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                if (blacklistArea.getText().equals("ExampleUser1,ExampleUser2")) {
+                    blacklistArea.setText("");
+                    blacklistArea.setForeground(Color.WHITE);
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                if (blacklistArea.getText().isEmpty()) {
+                    blacklistArea.setText("ExampleUser1,ExampleUser2");
+                    blacklistArea.setForeground(Color.GRAY);
                 }
             }
         });
@@ -117,7 +162,7 @@ public class AutoVIP extends JPanel {
         streamSlider.setMinorTickSpacing(1);
         streamSlider.setMajorTickSpacing(5);
         streamSlider.setPaintTicks(true);
-        streamSlider.setValue(acc.getAutoVIP_streams());
+        streamSlider.setValue(acc.getAutoVIPSettings().getStreams());
         streamSlider.setPaintLabels(true);
 
         saveButton.setBackground(new Color(0x86BECC));
@@ -127,9 +172,9 @@ public class AutoVIP extends JPanel {
         saveButton.setVerticalAlignment(SwingConstants.CENTER);
         saveButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 28));
 
-        saveButton.setBounds(20, 500, 150, 50);
+        saveButton.setBounds(20, 650, 985, 50);
 
-        add(welcomeText);
+        add(title);
         add(monthsTitle);
         add(monthsUndertitle);
         add(months);
@@ -139,43 +184,103 @@ public class AutoVIP extends JPanel {
         add(streamSlider);
         add(streamsTitle);
         add(streamsUndertitle);
+        //add(whitelistArea);
+        //add(whitelistTitle);
+        //add(whitelistUndertitle);
+        //add(blacklistTitle);
+        //add(blacklistUndertitle);
+        //add(blacklistArea);
 
-        announcement.setBounds(183, 112, 660, 40);
-        saveFeedback.setBounds(200, 157, 625, 40);
-        welcomeText.setBounds(20, 10, 600, 36);
-        months.setBounds(20, 270, 600, 55);
+        announcement.setBounds(183, 75, 660, 40);
+        saveFeedback.setBounds(200, 120, 625, 40);
+        title.setBounds(20, 10, 600, 36);
 
-        monthsTitle.setBounds(20, 200, 650, 55);
-        monthsUndertitle.setBounds(20, 220, 650, 55);
+        monthsTitle.setBounds(20, 175, 650, 20);
+        monthsUndertitle.setBounds(20, 195, 650, 14);
+        months.setBounds(20, 220, 500, 55);
 
-        streamsTitle.setBounds(20, 330, 650, 55);
-        streamsUndertitle.setBounds(20, 350, 750, 55);
-        streamSlider.setBounds(20, 400, 600, 55);
+        whitelistTitle.setForeground(Color.WHITE);
+        whitelistTitle.setHorizontalAlignment(SwingConstants.LEFT);
+        whitelistTitle.setVerticalAlignment(SwingConstants.CENTER);
+        whitelistTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+
+        whitelistUndertitle.setForeground(Color.GRAY);
+        whitelistUndertitle.setHorizontalAlignment(SwingConstants.LEFT);
+        whitelistUndertitle.setVerticalAlignment(SwingConstants.CENTER);
+        whitelistUndertitle.setFont(new Font("Trebuchet MS", Font.ITALIC, 12));
+
+        whitelistArea.setWrapStyleWord(true);
+        whitelistArea.setLineWrap(true);
+
+        whitelistTitle.setBounds(20, 385, 400, 20);
+        whitelistUndertitle.setBounds(20, 405, 400, 14);
+        whitelistArea.setBounds(20, 430, 400, 200);
+        whitelistArea.setBackground(new Color(0x464646));
+        whitelistArea.setForeground(Color.WHITE);
+        whitelistArea.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+
+        if (acc.getAutoVIPSettings().getWhitelist().replace(" ", "").equalsIgnoreCase("")) {
+            whitelistArea.setText("ExampleUser1,ExampleUser2");
+            whitelistArea.setForeground(Color.GRAY);
+        } else {
+            whitelistArea.setText(acc.getAutoVIPSettings().getWhitelist());
+        }
+
+        blacklistTitle.setForeground(Color.WHITE);
+        blacklistTitle.setHorizontalAlignment(SwingConstants.LEFT);
+        blacklistTitle.setVerticalAlignment(SwingConstants.CENTER);
+        blacklistTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+
+        blacklistUndertitle.setForeground(Color.GRAY);
+        blacklistUndertitle.setHorizontalAlignment(SwingConstants.LEFT);
+        blacklistUndertitle.setVerticalAlignment(SwingConstants.CENTER);
+        blacklistUndertitle.setFont(new Font("Trebuchet MS", Font.ITALIC, 12));
+
+        blacklistTitle.setBounds(450, 385, 400, 20);
+        blacklistUndertitle.setBounds(450, 405, 400, 14);
+        blacklistArea.setBounds(450, 430, 400, 200);
+        blacklistArea.setBackground(new Color(0x464646));
+        blacklistArea.setForeground(Color.WHITE);
+        blacklistArea.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+
+        if (acc.getAutoVIPSettings().getBlacklist().replace(" ", "").equalsIgnoreCase("")) {
+            blacklistArea.setText("ExampleUser1,ExampleUser2");
+            blacklistArea.setForeground(Color.GRAY);
+        } else {
+            blacklistArea.setText(acc.getAutoVIPSettings().getBlacklist());
+        }
+
+        blacklistArea.setWrapStyleWord(true);
+        blacklistArea.setLineWrap(true);
+
+        streamsTitle.setBounds(20, 280, 650, 20);
+        streamsUndertitle.setBounds(20, 300, 750, 14);
+        streamSlider.setBounds(20, 325, 550, 55);
 
         streamsTitle.setForeground(Color.WHITE);
         streamsTitle.setHorizontalAlignment(SwingConstants.LEFT);
         streamsTitle.setVerticalAlignment(SwingConstants.CENTER);
-        streamsTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
+        streamsTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
 
         streamsUndertitle.setForeground(Color.GRAY);
         streamsUndertitle.setHorizontalAlignment(SwingConstants.LEFT);
         streamsUndertitle.setVerticalAlignment(SwingConstants.CENTER);
-        streamsUndertitle.setFont(new Font("Trebuchet MS", Font.ITALIC, 14));
+        streamsUndertitle.setFont(new Font("Trebuchet MS", Font.ITALIC, 12));
 
         monthsTitle.setForeground(Color.WHITE);
         monthsTitle.setHorizontalAlignment(SwingConstants.LEFT);
         monthsTitle.setVerticalAlignment(SwingConstants.CENTER);
-        monthsTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 24));
+        monthsTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
 
         monthsUndertitle.setForeground(Color.GRAY);
         monthsUndertitle.setHorizontalAlignment(SwingConstants.LEFT);
         monthsUndertitle.setVerticalAlignment(SwingConstants.CENTER);
-        monthsUndertitle.setFont(new Font("Trebuchet MS", Font.ITALIC, 14));
+        monthsUndertitle.setFont(new Font("Trebuchet MS", Font.ITALIC, 12));
 
-        welcomeText.setForeground(Color.WHITE);
-        welcomeText.setHorizontalAlignment(SwingConstants.LEFT);
-        welcomeText.setVerticalAlignment(SwingConstants.CENTER);
-        welcomeText.setFont(new Font("Trebuchet MS", Font.PLAIN, 36));
+        title.setForeground(Color.WHITE);
+        title.setHorizontalAlignment(SwingConstants.LEFT);
+        title.setVerticalAlignment(SwingConstants.CENTER);
+        title.setFont(new Font("Trebuchet MS", Font.PLAIN, 36));
     }
 
 }

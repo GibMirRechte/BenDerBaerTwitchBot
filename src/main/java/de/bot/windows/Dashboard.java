@@ -1,6 +1,5 @@
 package de.bot.windows;
 
-import de.bot.elements.RoundedJPasswordField;
 import de.bot.handler.AccountHandler;
 import de.bot.handler.ImageIconHandler;
 import de.bot.handler.UpdateHandler;
@@ -9,8 +8,6 @@ import de.bot.utils.Announcement;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.PrintStream;
 import java.net.Socket;
 
@@ -33,7 +30,6 @@ public class Dashboard extends JPanel {
         }
 
         JLabel announcement = new JLabel("<html><center>" + an.text + "</center></html>");
-        JLabel changePasswordTitle = new JLabel("Passwort ändern");
 
         announcement.setBackground(Color.decode(an.color));
         announcement.setForeground(Color.WHITE);
@@ -48,134 +44,17 @@ public class Dashboard extends JPanel {
         announcement.setHorizontalTextPosition(JLabel.RIGHT);
         announcement.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
 
-        announcement.setBounds(183, 112, 660, 40);
+        announcement.setBounds(183, 75, 660, 40);
 
         JLabel welcomeText = new JLabel("Willkommen " + account.getName() + "!");
 
-        RoundedJPasswordField resetPasswortCurrent = new RoundedJPasswordField(10, new Color(0x272727), false, 20, 40);
-        RoundedJPasswordField resetPasswortNewOne = new RoundedJPasswordField(10, new Color(0x272727), false, 20, 40);
-        RoundedJPasswordField resetPasswortNewTwo = new RoundedJPasswordField(10, new Color(0x272727), false, 20, 40);
-
         add(welcomeText);
         add(announcement);
-        add(resetPasswortCurrent);
-        add(resetPasswortNewOne);
-        add(resetPasswortNewTwo);
-        add(changePasswordTitle);
-
         welcomeText.setBounds(20, 10, 600, 36);
-        changePasswordTitle.setBounds(45, 200, 300, 50);
-
-        resetPasswortCurrent.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (resetPasswortCurrent.getText().equals("Aktuelles Passwort")) {
-                    resetPasswortCurrent.setText("");
-                    resetPasswortCurrent.setForeground(Color.WHITE);
-                    resetPasswortCurrent.setEchoChar((char) 0x2022);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (resetPasswortCurrent.getText().isEmpty()) {
-                    resetPasswortCurrent.setText("Aktuelles Passwort");
-                    resetPasswortCurrent.setForeground(Color.GRAY);
-                    resetPasswortCurrent.setEchoChar((char) 0);
-                }
-            }
-        });
-        resetPasswortCurrent.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (resetPasswortCurrent.getText().equals("Neues Passwort")) {
-                    resetPasswortCurrent.setText("");
-                    resetPasswortCurrent.setForeground(Color.WHITE);
-                    resetPasswortCurrent.setEchoChar((char) 0x2022);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (resetPasswortCurrent.getText().isEmpty()) {
-                    resetPasswortCurrent.setText("Neues Passwort");
-                    resetPasswortCurrent.setForeground(Color.GRAY);
-                    resetPasswortCurrent.setEchoChar((char) 0);
-                }
-            }
-        });
-        resetPasswortNewOne.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (resetPasswortNewOne.getText().equals("Neues Passwort")) {
-                    resetPasswortNewOne.setText("");
-                    resetPasswortNewOne.setForeground(Color.WHITE);
-                    resetPasswortNewOne.setEchoChar((char) 0x2022);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (resetPasswortNewOne.getText().isEmpty()) {
-                    resetPasswortNewOne.setText("Neues Passwort");
-                    resetPasswortNewOne.setForeground(Color.GRAY);
-                    resetPasswortNewOne.setEchoChar((char) 0);
-                }
-            }
-        });
-        resetPasswortNewTwo.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (resetPasswortNewTwo.getText().equals("Passwort wiederholen")) {
-                    resetPasswortNewTwo.setText("");
-                    resetPasswortNewTwo.setForeground(Color.WHITE);
-                    resetPasswortNewTwo.setEchoChar((char) 0x2022);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (resetPasswortNewTwo.getText().isEmpty()) {
-                    resetPasswortNewTwo.setText("Passwort wiederholen");
-                    resetPasswortNewTwo.setForeground(Color.GRAY);
-                    resetPasswortNewTwo.setEchoChar((char) 0);
-                }
-            }
-        });
-
-        changePasswordTitle.setForeground(Color.WHITE);
-        changePasswordTitle.setHorizontalAlignment(SwingConstants.LEFT);
-        changePasswordTitle.setVerticalAlignment(SwingConstants.CENTER);
-        changePasswordTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
-
         welcomeText.setForeground(Color.WHITE);
         welcomeText.setHorizontalAlignment(SwingConstants.LEFT);
         welcomeText.setVerticalAlignment(SwingConstants.CENTER);
         welcomeText.setFont(new Font("Trebuchet MS", Font.PLAIN, 36));
-
-        resetPasswortCurrent.setVisible(true);
-        resetPasswortCurrent.setBackground(new Color(0x464646));
-        resetPasswortCurrent.setForeground(Color.GRAY);
-        resetPasswortCurrent.setText("Aktuelles Passwort");
-        resetPasswortCurrent.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
-        resetPasswortCurrent.setBounds(45, 250, 300, 50);
-        resetPasswortCurrent.setEchoChar((char) 0);
-
-        resetPasswortNewOne.setVisible(true);
-        resetPasswortNewOne.setBackground(new Color(0x464646));
-        resetPasswortNewOne.setForeground(Color.GRAY);
-        resetPasswortNewOne.setText("Neues Passwort");
-        resetPasswortNewOne.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
-        resetPasswortNewOne.setBounds(45, 310, 300, 50);
-        resetPasswortNewOne.setEchoChar((char) 0);
-
-        resetPasswortNewTwo.setVisible(true);
-        resetPasswortNewTwo.setBackground(new Color(0x464646));
-        resetPasswortNewTwo.setForeground(Color.GRAY);
-        resetPasswortNewTwo.setText("Passwort wiederholen");
-        resetPasswortNewTwo.setFont(new Font("Trebuchet MS", Font.BOLD, 20));
-        resetPasswortNewTwo.setBounds(45, 370, 300, 50);
-        resetPasswortNewTwo.setEchoChar((char) 0);
     }
 
     public static void main(String[] args) {

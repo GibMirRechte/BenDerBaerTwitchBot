@@ -46,7 +46,7 @@ public class Changelog extends JPanel {
         announcement.setHorizontalTextPosition(JLabel.RIGHT);
         announcement.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
 
-        announcement.setBounds(183, 112, 660, 40);
+        announcement.setBounds(183, 75, 660, 40);
         add(announcement);
 
         JLabel title = new JLabel("Changelog v0.2");
@@ -56,34 +56,10 @@ public class Changelog extends JPanel {
         add(changelog);
         add(autor);
 
-        String labelText = """
-                # Allgemeines #
-                - Neue Schriftart im Haus! Sie sieht nicht nur schick aus, sondern verbessert auch die Kompatibilität.
-                - Die Sidebar hat sich schick gemacht und ist jetzt auf kommende Updates vorbereitet.
-                - Im Sidebar-Menü haben wir den Team-Reiter durch "Changes" ersetzt.
-                - Du wirst es nicht übersehen: Der Update-Hinweis erstrahlt im neuen Design!
-                - Natürlich haben wir die Sicherheit nicht vergessen – einige sicherheitstechnische Änderungen wurden vorgenommen!
-                                
-                # AutoShout ist da! #
-                - Du kannst jetzt automatische Shoutouts an bestimmte User senden, wenn sie den Stream betreten.
-                                
-                # Anmeldung (Login) #
-                - Keine Mini-Hänger mehr nach einem erfolgreichen Login – alles läuft jetzt butterweich!
-                - Du kannst jetzt nicht nur einloggen, sondern auch registrieren!
-                - Keine Sorgen mehr um gesperrte Accounts – wir haben klare Hinweise hinzugefügt!.
-                - Wir haben ein paar kleine, verwirrende Fehler beseitigt. Nichts soll zwischen dir und deinem Stream-Spaß stehen!
-                - Logindaten können ab sofort gespeichert werden. Bequemlichkeit, wir kommen!
-                                
-                # Dashboard #
-                - Ab jetzt kannst du dein Passwort eigenhändig ändern. Du hast das Ruder in der Hand!
-                - Hol dir die Neuigkeiten direkt ins Dashboard: Der News-Banner informiert dich jetzt über aktuelle Geschehnisse!
-                                
-                # AutoVIP #
-                - Mal keine VIP-Behandlung? Kein Problem! AutoVIP deaktivieren – du hast die Kontrolle!
-                - Kompaktere Slider, genauso leistungsstark!
-                - Feinabstimmung leicht gemacht: Die Slider zeigen jetzt Einzelschritte für präzise Optimierung.
-                - Die neue Whitelist verleiht VIP-Status unabhängig von Aktivität!
-                - Die Blacklist verhindert VIP-Verleihungen. Aktuelle VIPs auf der Blacklist verabschieden sich leider.""";
+        String labelText = """            
+                # AutoShout #
+                - Ein schwerwiegender Fehler wurde entdeckt und zügig behoben. Deine Shoutouts laufen jetzt wieder reibungslos!
+                """;
 
         JTextArea label = new JTextArea(labelText);
         label.setEditable(false);
@@ -120,16 +96,15 @@ public class Changelog extends JPanel {
         autor.setHorizontalTextPosition(SwingConstants.LEADING);
         autor.setIconTextGap(5);
 
-        // Erstelle ein benutzerdefiniertes Border
         Border border = BorderFactory.createCompoundBorder(
                 BorderFactory.createMatteBorder(0, 0, 1, 0, Color.GRAY),
                 BorderFactory.createEmptyBorder(5, 10, 5, 10)
         );
         title.setBorder(border);
 
-        title.setBounds(338, 175, 350, 30);
-        autor.setBounds(312, 210, 400, 20);
-        scrollPane.setBounds(10, 250, 1000, 450);
+        title.setBounds(338, 138, 350, 30);
+        autor.setBounds(312, 173, 400, 20);
+        scrollPane.setBounds(10, 225, 1000, 487);
     }
 
     class CustomScrollBarUI extends BasicScrollBarUI {

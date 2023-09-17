@@ -50,7 +50,7 @@ public class Sidebar extends JPanel {
         }
 
         JLabel dashboard = new JLabel("Dashboard");
-        JLabel soon1 = new JLabel("Coming Soon");
+        JLabel settings = new JLabel("Einstellungen");
         JLabel support = new JLabel("Support");
         JLabel copyright = new JLabel("Changes");
         JLabel discord = new JLabel("Discord");
@@ -81,11 +81,10 @@ public class Sidebar extends JPanel {
         discord.setVerticalAlignment(SwingConstants.CENTER);
         discord.setFont(new Font("Trebuchet MS", Font.PLAIN, 15));
 
-        soon1.setBackground(new Color(0x113F67));
-        soon1.setForeground(Color.WHITE);
-        soon1.setHorizontalAlignment(SwingConstants.CENTER);
-        soon1.setVerticalAlignment(SwingConstants.CENTER);
-        soon1.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+        settings.setForeground(Color.WHITE);
+        settings.setHorizontalAlignment(SwingConstants.CENTER);
+        settings.setVerticalAlignment(SwingConstants.CENTER);
+        settings.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
 
         support.setBackground(new Color(0x113F67));
         support.setForeground(Color.WHITE);
@@ -120,10 +119,26 @@ public class Sidebar extends JPanel {
         autoShout.setHorizontalAlignment(SwingConstants.CENTER);
         autoShout.setVerticalAlignment(SwingConstants.CENTER);
         autoShout.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
-        autoShout.setIcon(soonLabel);
-        autoShout.setVerticalTextPosition(SwingConstants.TOP);
-        autoShout.setHorizontalTextPosition(SwingConstants.LEADING);
         autoShout.setIconTextGap(5);
+
+        settings.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                settings.setText("<html><u>Einstellungen</u></html>");
+                settings.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                settings.setText("Einstellungen");
+                settings.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                windowHandler.openWindow(WindowHandler.WindowType.SETTINGS);
+            }
+        });
 
         dashboard.addMouseListener(new MouseAdapter() {
             @Override
@@ -180,25 +195,6 @@ public class Sidebar extends JPanel {
             public void mousePressed(MouseEvent e) {
                 accountHandler.logout();
                 windowHandler.openWindow(WindowHandler.WindowType.LOGIN);
-            }
-        });
-
-        copyright.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                copyright.setText("<html><u>Changes</u></html>");
-                copyright.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                copyright.setText("Changes");
-                copyright.setCursor(Cursor.getDefaultCursor());
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-                copyright.setBackground(new Color(0x113F67));
             }
         });
 
@@ -264,7 +260,7 @@ public class Sidebar extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
-                autoShout.setBackground(new Color(0x113F67));
+                windowHandler.openWindow(WindowHandler.WindowType.AUTOSHOUT);
             }
         });
 
@@ -313,7 +309,7 @@ public class Sidebar extends JPanel {
         add(autoShout);
         add(logo);
         add(dashboard);
-        add(soon1);
+        add(settings);
         add(streams);
         add(support);
         add(soon3);
@@ -323,12 +319,12 @@ public class Sidebar extends JPanel {
         autoShout.setBounds(5, 210, 245, 50);
         autoVip.setBounds(5, 270, 245, 50);
         soon3.setBounds(5, 330, 245, 50);
-        soon1.setBounds(5, 390, 245, 50);
+        settings.setBounds(5, 390, 245, 50);
         support.setBounds(5, 450, 245, 50);
-        copyright.setBounds(66, 680, 58, 30);
-        streams.setBounds(127, 680, 58, 30);
-        logout.setBounds(193, 680, 58, 30);
-        discord.setBounds(5, 680, 58, 30);
+        copyright.setBounds(71, 680, 61, 30);
+        streams.setBounds(132, 680, 61, 30);
+        logout.setBounds(193, 680, 61, 30);
+        discord.setBounds(5, 680, 61, 30);
 
         JLabel sidebarBackground = new JLabel("");
         sidebarBackground.setBounds(0, 0, 255, 720);

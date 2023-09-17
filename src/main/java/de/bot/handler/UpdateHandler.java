@@ -2,6 +2,7 @@ package de.bot.handler;
 
 import de.bot.main.Main;
 import de.bot.utils.Announcement;
+import de.bot.utils.ToolData;
 
 import java.io.*;
 import java.net.Socket;
@@ -11,12 +12,17 @@ import java.nio.channels.ReadableByteChannel;
 
 public class UpdateHandler {
 
-    private final String currentVersion = "0.0.1";
+    private final String currentVersion = "0.2";
     private boolean newUpdateAvailable = false;
     static UpdateHandler instance;
     private String newestVersion = "";
     String newUpdateDownloadLink = "";
     Announcement announcement;
+    private final ToolData toolData = new ToolData(false, true);
+
+    public ToolData getToolData() {
+        return toolData;
+    }
 
     public static UpdateHandler getInstance() {
         if (instance == null) {
@@ -65,12 +71,17 @@ public class UpdateHandler {
 
             newestVersion = bufferedReader.readLine();
             newUpdateDownloadLink = bufferedReader.readLine();
+
+            boolean maintenance_autoshout = Boolean.parseBoolean(bufferedReader.readLine());
+            boolean maintenance_autovip = Boolean.parseBoolean(bufferedReader.readLine());
+            getToolData().updateMaintenance(maintenance_autoshout, maintenance_autovip);
+
             if (!currentVersion.equalsIgnoreCase(newestVersion)) {
                 newUpdateAvailable = true;
                 new Thread(() -> {
                     try {
                         downloadNewestVersion();
-                    } catch (IOException e) {
+                    } catch (IOException ignored) {
                     }
                 }).start();
             }

@@ -1,7 +1,6 @@
 package de.bot.handler;
 
 import de.bot.utils.Account;
-import de.bot.utils.BanData;
 
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
@@ -65,9 +64,6 @@ public class AccountHandler {
 
 
     public Account getAccount() {
-        if (account == null) {
-            return new Account("GibMirRechte", "Max2005Max", "", "T", "T", AccountType.ADMIN, 0, 0, new BanData(false, 0, ""));
-        }
         return account;
     }
 
