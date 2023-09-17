@@ -32,6 +32,10 @@ public class UpdateHandler {
         return instance;
     }
 
+    public void updateAnnouncement(Announcement announcement) {
+        this.announcement = announcement;
+    }
+
     public Announcement getAnnouncement() {
 
         if (announcement == null) {

@@ -18,7 +18,7 @@ public class WindowHandler {
 
     public enum WindowType {
         DASHBOARD(false), LOGIN(false), AUTOVIP(true), UPDATE(false), CHANGELOG(false),
-        NOT_ALLOWED(false), AUTOSHOUT(false), STREAMS(false), SETTINGS(false);
+        NOT_ALLOWED(false), AUTOSHOUT(false), STREAMS(false), SETTINGS(false), ADMINDASHBOARD(false);
 
         public boolean onlyVIP;
 
@@ -120,6 +120,16 @@ public class WindowHandler {
                 frame.getContentPane().add(sidebar, BorderLayout.WEST);
                 frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Einstellungen");
                 frame.getContentPane().add(new Settings()).setBackground(new Color(0x272727));
+            }
+            case ADMINDASHBOARD -> {
+                if (!accountHandler.getAccount().getAccountType().equals(AccountHandler.AccountType.ADMIN)) {
+                    openWindow(WindowType.DASHBOARD);
+                } else {
+                    currentWindow = WindowType.SETTINGS;
+                    frame.getContentPane().add(sidebar, BorderLayout.WEST);
+                    frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Admin-Dashboard");
+                    frame.getContentPane().add(new AdminDashboard()).setBackground(new Color(0x272727));
+                }
             }
             default -> {
             }

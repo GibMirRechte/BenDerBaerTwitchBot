@@ -3,11 +3,14 @@ package de.bot.windows;
 import de.bot.handler.AccountHandler;
 import de.bot.handler.ImageIconHandler;
 import de.bot.handler.UpdateHandler;
+import de.bot.handler.WindowHandler;
 import de.bot.utils.Account;
 import de.bot.utils.Announcement;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.PrintStream;
 import java.net.Socket;
 
@@ -15,6 +18,7 @@ public class Dashboard extends JPanel {
 
     UpdateHandler updateHandler = UpdateHandler.getInstance();
     AccountHandler accountHandler = AccountHandler.getInstance();
+    WindowHandler windowHandler = WindowHandler.getInstance();
 
     public Dashboard() {
         Account account = accountHandler.getAccount();
@@ -55,6 +59,92 @@ public class Dashboard extends JPanel {
         welcomeText.setHorizontalAlignment(SwingConstants.LEFT);
         welcomeText.setVerticalAlignment(SwingConstants.CENTER);
         welcomeText.setFont(new Font("Trebuchet MS", Font.PLAIN, 36));
+
+        JLabel accountInfo = new JLabel("<html>Benutzername: " + account.getName() + "</html>");
+        JLabel rank = new JLabel("Rang: ");
+
+        rank.setBounds(20, 170, 600, 20);
+        rank.setForeground(Color.WHITE);
+        rank.setHorizontalAlignment(SwingConstants.LEFT);
+        rank.setHorizontalTextPosition(SwingConstants.LEADING);
+        rank.setIcon(new ImageIcon(accountHandler.getBadge(account.getAccountType())));
+        rank.setVerticalAlignment(SwingConstants.CENTER);
+        rank.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+
+        accountInfo.setBounds(20, 150, 600, 20);
+        accountInfo.setForeground(Color.WHITE);
+        accountInfo.setHorizontalAlignment(SwingConstants.LEFT);
+        accountInfo.setVerticalAlignment(SwingConstants.CENTER);
+        accountInfo.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+
+        JLabel adminDashboard = new JLabel("Admin-Dashboard");
+
+        adminDashboard.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                adminDashboard.setText("<html><u>Admin-Dashboard</u></html>");
+                adminDashboard.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                adminDashboard.setText("Admin-Dashboard");
+                adminDashboard.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                windowHandler.openWindow(WindowHandler.WindowType.ADMINDASHBOARD);
+            }
+        });
+
+        adminDashboard.setBackground(new Color(0x851417));
+        adminDashboard.setOpaque(true);
+        adminDashboard.setForeground(Color.WHITE);
+        adminDashboard.setHorizontalAlignment(SwingConstants.CENTER);
+        adminDashboard.setVerticalAlignment(SwingConstants.CENTER);
+        adminDashboard.setFont(new Font("Trebuchet MS", Font.PLAIN, 28));
+
+        JLabel staffDashboard = new JLabel("Staff-Dashboard");
+
+        staffDashboard.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                staffDashboard.setText("<html><u>Staff-Dashboard</u></html>");
+                staffDashboard.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                staffDashboard.setText("Staff-Dashboard");
+                staffDashboard.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+        });
+
+        staffDashboard.setBackground(new Color(0xAD4848));
+        staffDashboard.setOpaque(true);
+        staffDashboard.setForeground(Color.WHITE);
+        staffDashboard.setHorizontalAlignment(SwingConstants.CENTER);
+        staffDashboard.setVerticalAlignment(SwingConstants.CENTER);
+        staffDashboard.setFont(new Font("Trebuchet MS", Font.PLAIN, 28));
+
+        if (account.getAccountType().equals(AccountHandler.AccountType.ADMIN)) {
+            staffDashboard.setBounds(520, 650, 480, 50);
+            adminDashboard.setBounds(20, 650, 480, 50);
+            add(staffDashboard);
+            add(adminDashboard);
+        } else if (account.getAccountType().equals(AccountHandler.AccountType.STAFF)) {
+            staffDashboard.setBounds(20, 650, 985, 50);
+            add(staffDashboard);
+        }
+
+
+        add(accountInfo);
+        add(rank);
     }
 
     public static void main(String[] args) {

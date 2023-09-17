@@ -1,6 +1,5 @@
 package de.bot.windows;
 
-import de.bot.handler.AccountHandler;
 import de.bot.handler.ImageIconHandler;
 import de.bot.handler.UpdateHandler;
 import de.bot.utils.Announcement;
@@ -10,7 +9,6 @@ import java.awt.*;
 
 public class Maintenance extends JPanel {
 
-    AccountHandler accountHandler = AccountHandler.getInstance();
     UpdateHandler updateHandler = UpdateHandler.getInstance();
 
     public Maintenance(String title) {
@@ -56,10 +54,6 @@ public class Maintenance extends JPanel {
 
         add(message);
 
-
-    }
-
-    public static void main(String[] args) {
 
     }
 

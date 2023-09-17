@@ -1,10 +1,6 @@
 package de.bot.utils;
 
-import com.github.philippheuer.credentialmanager.domain.OAuth2Credential;
 import com.github.twitch4j.TwitchClient;
-import com.github.twitch4j.TwitchClientBuilder;
-import com.github.twitch4j.chat.events.channel.ChannelMessageEvent;
-import de.bot.events.OnChannelMessageEvent;
 import de.bot.handler.AccountHandler;
 
 import java.util.ArrayList;
@@ -40,9 +36,9 @@ public class Account {
         this.autoShoutSettings = autoShoutSettings;
 
         if (!banData.isActiveBan()) {
-            this.twitchClient = TwitchClientBuilder.builder().withEnableHelix(Boolean.TRUE).withClientId("gp762nuuoqcoxypju8c569th9wz7q5").withChatAccount(new OAuth2Credential("twitch", this.accessToken)).withEnableChat(Boolean.TRUE).build();
-            this.twitchClient.getChat().joinChannel(this.name);
-            this.twitchClient.getEventManager().onEvent(ChannelMessageEvent.class, event -> new OnChannelMessageEvent().printChannelMessage(event));
+            //this.twitchClient = TwitchClientBuilder.builder().withEnableHelix(Boolean.TRUE).withClientId("gp762nuuoqcoxypju8c569th9wz7q5").withChatAccount(new OAuth2Credential("twitch", this.accessToken)).withEnableChat(Boolean.TRUE).build();
+            //this.twitchClient.getChat().joinChannel(this.name);
+            //this.twitchClient.getEventManager().onEvent(ChannelMessageEvent.class, event -> new OnChannelMessageEvent().printChannelMessage(event));
         }
     }
 
