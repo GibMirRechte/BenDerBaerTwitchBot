@@ -7,6 +7,7 @@ import de.bot.utils.Account;
 import de.bot.utils.Announcement;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -22,7 +23,7 @@ public class AutoVIP extends JPanel {
     AccountHandler accountHandler = AccountHandler.getInstance();
 
     public AutoVIP() {
-        setPreferredSize(new Dimension(1025, 720));
+        setPreferredSize(new Dimension(1040, 816));
         setLayout(null);
 
         try {
@@ -45,7 +46,7 @@ public class AutoVIP extends JPanel {
             announcement.setIcon(ImageIconHandler.imageType.INFO_ICON.imageIcon);
         }
         announcement.setHorizontalTextPosition(JLabel.RIGHT);
-        announcement.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+        announcement.setFont(new Font("Arial", Font.PLAIN, 14));
 
         Account acc = accountHandler.getAccount();
 
@@ -64,12 +65,16 @@ public class AutoVIP extends JPanel {
         JLabel blacklistTitle = new JLabel("Blacklist");
         JLabel blacklistUndertitle = new JLabel("User erhalten niemals VIP. (Mit Komma trennen)");
         JTextArea blacklistArea = new JTextArea("");
+        JTextArea sliderBackground = new JTextArea("");
 
-        months.setBackground(new Color(0x113F67));
+        Border emptyBorder = BorderFactory.createEmptyBorder(0, 10, 0, 10);
+
+        months.setBackground(new Color(0x262626));
         months.setForeground(Color.WHITE);
-        months.setFont(new Font("Trebuchet MS", Font.PLAIN, 15));
+        months.setFont(new Font("Arial", Font.PLAIN, 15));
         months.setMinorTickSpacing(0);
         months.setMajorTickSpacing(1);
+        months.setBorder(emptyBorder);
         months.setValue(acc.getAutoVIPSettings().getMonths());
         months.setPaintTicks(true);
         months.setPaintLabels(true);
@@ -80,19 +85,19 @@ public class AutoVIP extends JPanel {
         saveFeedback.setVisible(false);
         saveFeedback.setHorizontalAlignment(JLabel.CENTER);
         saveFeedback.setHorizontalTextPosition(JLabel.RIGHT);
-        saveFeedback.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+        saveFeedback.setFont(new Font("Arial", Font.PLAIN, 14));
 
 
         saveButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                saveButton.setText("<html><u>Speichern</u></html>");
+                saveButton.setBackground(new Color(0x236C9F));
                 saveButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                saveButton.setText("Speichern");
+                saveButton.setBackground(new Color(0x1E5E8B));
                 saveButton.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -155,24 +160,30 @@ public class AutoVIP extends JPanel {
         });
 
 
-        streamSlider.setBackground(new Color(0x113F67));
+        streamSlider.setBackground(new Color(0x262626));
         streamSlider.setForeground(Color.WHITE);
-        streamSlider.setFont(new Font("Trebuchet MS", Font.PLAIN, 15));
+        streamSlider.setFont(new Font("Arial", Font.PLAIN, 15));
 
         streamSlider.setMinorTickSpacing(1);
+        streamSlider.setBorder(emptyBorder);
         streamSlider.setMajorTickSpacing(5);
         streamSlider.setPaintTicks(true);
         streamSlider.setValue(acc.getAutoVIPSettings().getStreams());
         streamSlider.setPaintLabels(true);
 
-        saveButton.setBackground(new Color(0x86BECC));
+        sliderBackground.setBackground(new Color(0x1A1A1A));
+        sliderBackground.setVisible(true);
+        sliderBackground.setOpaque(true);
+        sliderBackground.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
+
+        saveButton.setBackground(new Color(0x1E5E8B));
         saveButton.setOpaque(true);
         saveButton.setForeground(Color.WHITE);
         saveButton.setHorizontalAlignment(SwingConstants.CENTER);
         saveButton.setVerticalAlignment(SwingConstants.CENTER);
-        saveButton.setFont(new Font("Trebuchet MS", Font.PLAIN, 28));
+        saveButton.setFont(new Font("Arial", Font.PLAIN, 28));
 
-        saveButton.setBounds(20, 650, 985, 50);
+        saveButton.setBounds(20, 750, 1000, 50);
 
         add(title);
         add(monthsTitle);
@@ -184,6 +195,7 @@ public class AutoVIP extends JPanel {
         add(streamSlider);
         add(streamsTitle);
         add(streamsUndertitle);
+        add(sliderBackground);
         //add(whitelistArea);
         //add(whitelistTitle);
         //add(whitelistUndertitle);
@@ -193,31 +205,38 @@ public class AutoVIP extends JPanel {
 
         announcement.setBounds(183, 75, 660, 40);
         saveFeedback.setBounds(200, 120, 625, 40);
-        title.setBounds(20, 10, 600, 36);
+        title.setBounds(40, 10, 600, 36);
 
-        monthsTitle.setBounds(20, 175, 650, 20);
-        monthsUndertitle.setBounds(20, 195, 650, 14);
-        months.setBounds(20, 220, 500, 55);
+        monthsTitle.setBounds(40, 175, 650, 20);
+        monthsUndertitle.setBounds(40, 195, 650, 14);
+        months.setBounds(40, 220, 550, 55);
+
+        whitelistTitle.setBounds(40, 385, 400, 20);
+        whitelistUndertitle.setBounds(40, 405, 400, 14);
+        whitelistArea.setBounds(40, 430, 400, 200);
+
+        streamsTitle.setBounds(40, 280, 650, 20);
+        streamsUndertitle.setBounds(40, 300, 600, 14);
+        streamSlider.setBounds(40, 325, 550, 55);
+
+        sliderBackground.setBounds(20, 155, 640, 245);
 
         whitelistTitle.setForeground(Color.WHITE);
         whitelistTitle.setHorizontalAlignment(SwingConstants.LEFT);
         whitelistTitle.setVerticalAlignment(SwingConstants.CENTER);
-        whitelistTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+        whitelistTitle.setFont(new Font("Arial", Font.PLAIN, 18));
 
         whitelistUndertitle.setForeground(Color.GRAY);
         whitelistUndertitle.setHorizontalAlignment(SwingConstants.LEFT);
         whitelistUndertitle.setVerticalAlignment(SwingConstants.CENTER);
-        whitelistUndertitle.setFont(new Font("Trebuchet MS", Font.ITALIC, 12));
+        whitelistUndertitle.setFont(new Font("Arial", Font.ITALIC, 12));
 
         whitelistArea.setWrapStyleWord(true);
         whitelistArea.setLineWrap(true);
 
-        whitelistTitle.setBounds(20, 385, 400, 20);
-        whitelistUndertitle.setBounds(20, 405, 400, 14);
-        whitelistArea.setBounds(20, 430, 400, 200);
-        whitelistArea.setBackground(new Color(0x464646));
+        whitelistArea.setBackground(new Color(0x262626));
         whitelistArea.setForeground(Color.WHITE);
-        whitelistArea.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+        whitelistArea.setFont(new Font("Arial", Font.PLAIN, 18));
 
         if (acc.getAutoVIPSettings().getWhitelist().replace(" ", "").equalsIgnoreCase("")) {
             whitelistArea.setText("ExampleUser1,ExampleUser2");
@@ -229,19 +248,19 @@ public class AutoVIP extends JPanel {
         blacklistTitle.setForeground(Color.WHITE);
         blacklistTitle.setHorizontalAlignment(SwingConstants.LEFT);
         blacklistTitle.setVerticalAlignment(SwingConstants.CENTER);
-        blacklistTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+        blacklistTitle.setFont(new Font("Arial", Font.PLAIN, 18));
 
         blacklistUndertitle.setForeground(Color.GRAY);
         blacklistUndertitle.setHorizontalAlignment(SwingConstants.LEFT);
         blacklistUndertitle.setVerticalAlignment(SwingConstants.CENTER);
-        blacklistUndertitle.setFont(new Font("Trebuchet MS", Font.ITALIC, 12));
+        blacklistUndertitle.setFont(new Font("Arial", Font.ITALIC, 12));
 
         blacklistTitle.setBounds(450, 385, 400, 20);
         blacklistUndertitle.setBounds(450, 405, 400, 14);
         blacklistArea.setBounds(450, 430, 400, 200);
-        blacklistArea.setBackground(new Color(0x464646));
+        blacklistArea.setBackground(new Color(0x262626));
         blacklistArea.setForeground(Color.WHITE);
-        blacklistArea.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+        blacklistArea.setFont(new Font("Arial", Font.PLAIN, 18));
 
         if (acc.getAutoVIPSettings().getBlacklist().replace(" ", "").equalsIgnoreCase("")) {
             blacklistArea.setText("ExampleUser1,ExampleUser2");
@@ -253,34 +272,30 @@ public class AutoVIP extends JPanel {
         blacklistArea.setWrapStyleWord(true);
         blacklistArea.setLineWrap(true);
 
-        streamsTitle.setBounds(20, 280, 650, 20);
-        streamsUndertitle.setBounds(20, 300, 750, 14);
-        streamSlider.setBounds(20, 325, 550, 55);
-
         streamsTitle.setForeground(Color.WHITE);
         streamsTitle.setHorizontalAlignment(SwingConstants.LEFT);
         streamsTitle.setVerticalAlignment(SwingConstants.CENTER);
-        streamsTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+        streamsTitle.setFont(new Font("Arial", Font.PLAIN, 18));
 
         streamsUndertitle.setForeground(Color.GRAY);
         streamsUndertitle.setHorizontalAlignment(SwingConstants.LEFT);
         streamsUndertitle.setVerticalAlignment(SwingConstants.CENTER);
-        streamsUndertitle.setFont(new Font("Trebuchet MS", Font.ITALIC, 12));
+        streamsUndertitle.setFont(new Font("Arial", Font.ITALIC, 12));
 
         monthsTitle.setForeground(Color.WHITE);
         monthsTitle.setHorizontalAlignment(SwingConstants.LEFT);
         monthsTitle.setVerticalAlignment(SwingConstants.CENTER);
-        monthsTitle.setFont(new Font("Trebuchet MS", Font.PLAIN, 18));
+        monthsTitle.setFont(new Font("Arial", Font.PLAIN, 18));
 
         monthsUndertitle.setForeground(Color.GRAY);
         monthsUndertitle.setHorizontalAlignment(SwingConstants.LEFT);
         monthsUndertitle.setVerticalAlignment(SwingConstants.CENTER);
-        monthsUndertitle.setFont(new Font("Trebuchet MS", Font.ITALIC, 12));
+        monthsUndertitle.setFont(new Font("Arial", Font.ITALIC, 12));
 
         title.setForeground(Color.WHITE);
         title.setHorizontalAlignment(SwingConstants.LEFT);
         title.setVerticalAlignment(SwingConstants.CENTER);
-        title.setFont(new Font("Trebuchet MS", Font.PLAIN, 36));
+        title.setFont(new Font("Arial", Font.PLAIN, 36));
     }
 
 }

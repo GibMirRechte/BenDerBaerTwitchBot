@@ -18,6 +18,8 @@ public class OnChannelMessageEvent {
             if (!account.getAutoshout_Cache().contains(event.getUser().getName())) {
                 if (account.getAutoShoutSettings().getUserList().contains(event.getUser().getName())) {
                     account.getTwitchClient().getHelix().sendShoutout(account.getAccessToken(), account.getChannelID(), event.getUser().getId(), account.getChannelID());
+                    event.getTwitchChat().sendMessage(event.getChannel().getName(), "");
+                    account.getAutoshout_Cache().add(event.getUser().getName());
                 }
             }
         }

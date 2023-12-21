@@ -1,8 +1,6 @@
 package de.bot.windows;
 
 import de.bot.handler.AccountHandler;
-import de.bot.handler.ImageIconHandler;
-import de.bot.utils.Account;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,30 +10,22 @@ public class UpdateAvailable extends JPanel {
     AccountHandler accountHandler = AccountHandler.getInstance();
 
     public UpdateAvailable() {
-        Account account = accountHandler.getAccount();
-        setPreferredSize(new Dimension(1280, 720));
+        setPreferredSize(new Dimension(1295, 816));
         setLayout(null);
 
-        JLabel logo;
+        JLabel sidebarHeader = new JLabel("<html><center>TwitchBot</center></html>");
 
-        if (account.getAccountType().equals(AccountHandler.AccountType.PREMIUM)) {
-            logo = new JLabel(ImageIconHandler.imageType.LOGO_PREMIUM.imageIcon);
-        } else if (account.getAccountType().equals(AccountHandler.AccountType.ADMIN) ||
-                account.getAccountType().equals(AccountHandler.AccountType.STAFF)) {
-            logo = new JLabel(ImageIconHandler.imageType.LOGO_STAFF.imageIcon);
-        } else {
-            logo = new JLabel(ImageIconHandler.imageType.LOGO_NORMAL.imageIcon);
-        }
-
-        add(logo);
-
-        logo.setBounds(5, 10, 245, 180);
+        sidebarHeader.setForeground(Color.WHITE);
+        sidebarHeader.setHorizontalAlignment(SwingConstants.CENTER);
+        sidebarHeader.setVerticalAlignment(SwingConstants.CENTER);
+        sidebarHeader.setFont(new Font("Arial", Font.BOLD, 20));
+        sidebarHeader.setBackground(new Color(0x1A1A1A));
+        sidebarHeader.setOpaque(true);
 
         JLabel sidebarBackground = new JLabel("");
-        sidebarBackground.setBounds(0, 0, 255, 720);
+        sidebarBackground.setBounds(0, 0, 255, 816);
         sidebarBackground.setOpaque(true);
-        add(sidebarBackground);
-        sidebarBackground.setBackground(new Color(0x113F67));
+        sidebarBackground.setBackground(new Color(0x262626));
 
         JLabel message = new JLabel("<html><center><b>HINWEIS</b><br><br>Ein Update ist verfügbar!<br>Bitte starte das Programm neu.</center></html>");
 
@@ -44,10 +34,13 @@ public class UpdateAvailable extends JPanel {
         message.setForeground(Color.WHITE);
         message.setHorizontalAlignment(SwingConstants.CENTER);
         message.setVerticalAlignment(SwingConstants.CENTER);
-        message.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+        message.setFont(new Font("Arial", Font.PLAIN, 25));
 
-        message.setBounds(438, 185, 660, 350);
+        sidebarHeader.setBounds(0, 0, 255, 75);
+        message.setBounds(445, 233, 660, 350);
 
+        add(sidebarHeader);
+        add(sidebarBackground);
         add(message);
 
     }

@@ -18,7 +18,7 @@ public class NotAllowed extends JPanel {
         Account account = accountHandler.getAccount();
         Announcement an = updateHandler.getAnnouncement();
 
-        setPreferredSize(new Dimension(1025, 720));
+        setPreferredSize(new Dimension(1040, 816));
         setLayout(null);
 
         try {
@@ -40,7 +40,7 @@ public class NotAllowed extends JPanel {
             announcement.setIcon(ImageIconHandler.imageType.INFO_ICON.imageIcon);
         }
         announcement.setHorizontalTextPosition(JLabel.RIGHT);
-        announcement.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+        announcement.setFont(new Font("Arial", Font.PLAIN, 14));
 
         announcement.setBounds(183, 75, 660, 40);
 
@@ -53,7 +53,7 @@ public class NotAllowed extends JPanel {
         message.setForeground(Color.WHITE);
         message.setHorizontalAlignment(SwingConstants.CENTER);
         message.setVerticalAlignment(SwingConstants.CENTER);
-        message.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+        message.setFont(new Font("Arial", Font.PLAIN, 25));
 
         message.setBounds(183, 185, 660, 350);
 

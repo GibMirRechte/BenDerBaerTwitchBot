@@ -1,30 +1,29 @@
 package de.bot.windows;
 
-import de.bot.handler.AccountHandler;
-import de.bot.handler.ImageIconHandler;
-import de.bot.handler.UpdateHandler;
-import de.bot.handler.WindowHandler;
+import de.bot.handler.*;
 import de.bot.utils.Account;
 import de.bot.utils.Announcement;
+import de.bot.utils.News;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.PrintStream;
-import java.net.Socket;
 
 public class Dashboard extends JPanel {
 
     UpdateHandler updateHandler = UpdateHandler.getInstance();
     AccountHandler accountHandler = AccountHandler.getInstance();
     WindowHandler windowHandler = WindowHandler.getInstance();
+    NewsHandler newsHandler = NewsHandler.getInstance();
 
     public Dashboard() {
+        News news = newsHandler.getNewestNews(1).get(0);
         Account account = accountHandler.getAccount();
         Announcement an = updateHandler.getAnnouncement();
 
-        setPreferredSize(new Dimension(1025, 720));
+        setPreferredSize(new Dimension(1040, 816));
         setLayout(null);
 
         try {
@@ -46,11 +45,40 @@ public class Dashboard extends JPanel {
             announcement.setIcon(ImageIconHandler.imageType.INFO_ICON.imageIcon);
         }
         announcement.setHorizontalTextPosition(JLabel.RIGHT);
-        announcement.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+        announcement.setFont(new Font("Arial", Font.PLAIN, 14));
 
         announcement.setBounds(183, 75, 660, 40);
 
         JLabel welcomeText = new JLabel("Willkommen " + account.getName() + "!");
+        JLabel newsBackground = new JLabel();
+        JLabel accountInfoBackground = new JLabel();
+        JLabel newsTitle = new JLabel("Aktuelle News");
+        JLabel latestNews = new JLabel("<html><h2>" + news.getTitle() + "</h2><br>" + getNewsTeaser(news) + "<br><br><font color=#34c0eb>>> Klicke zum weiterlesen</font></html>");
+
+        newsTitle.setForeground(Color.WHITE);
+        newsTitle.setHorizontalAlignment(SwingConstants.CENTER);
+        newsTitle.setVerticalAlignment(SwingConstants.CENTER);
+        newsTitle.setFont(new Font("Arial", Font.PLAIN, 24));
+
+        Border emptyBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+
+        latestNews.setForeground(Color.WHITE);
+        latestNews.setOpaque(true);
+        latestNews.setBorder(emptyBorder);
+        latestNews.setBackground(new Color(0x262626));
+        latestNews.setHorizontalAlignment(SwingConstants.LEFT);
+        latestNews.setVerticalAlignment(SwingConstants.CENTER);
+        latestNews.setFont(new Font("Arial", Font.PLAIN, 14));
+
+        newsBackground.setBackground(new Color(0x1A1A1A));
+        newsBackground.setVisible(true);
+        newsBackground.setOpaque(true);
+        newsBackground.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
+
+        accountInfoBackground.setBackground(new Color(0x1A1A1A));
+        accountInfoBackground.setVisible(true);
+        accountInfoBackground.setOpaque(true);
+        accountInfoBackground.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
 
         add(welcomeText);
         add(announcement);
@@ -58,132 +86,80 @@ public class Dashboard extends JPanel {
         welcomeText.setForeground(Color.WHITE);
         welcomeText.setHorizontalAlignment(SwingConstants.LEFT);
         welcomeText.setVerticalAlignment(SwingConstants.CENTER);
-        welcomeText.setFont(new Font("Trebuchet MS", Font.PLAIN, 36));
+        welcomeText.setFont(new Font("Arial", Font.PLAIN, 36));
 
         JLabel accountInfo = new JLabel("<html>Benutzername: " + account.getName() + "</html>");
         JLabel rank = new JLabel("Rang: ");
+        JLabel channelID = new JLabel("Channel-ID: " + account.getChannelID());
 
-        rank.setBounds(20, 170, 600, 20);
         rank.setForeground(Color.WHITE);
+        rank.setBackground(new Color(0x262626));
+        rank.setOpaque(true);
+        rank.setBorder(emptyBorder);
         rank.setHorizontalAlignment(SwingConstants.LEFT);
         rank.setHorizontalTextPosition(SwingConstants.LEADING);
-        rank.setIcon(new ImageIcon(accountHandler.getBadge(account.getAccountType())));
+        rank.setIcon(new ImageIcon(accountHandler.getBadge(account.getAccountRank())));
         rank.setVerticalAlignment(SwingConstants.CENTER);
-        rank.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+        rank.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        accountInfo.setBounds(20, 150, 600, 20);
         accountInfo.setForeground(Color.WHITE);
+        accountInfo.setBackground(new Color(0x262626));
+        accountInfo.setOpaque(true);
+        accountInfo.setBorder(emptyBorder);
         accountInfo.setHorizontalAlignment(SwingConstants.LEFT);
         accountInfo.setVerticalAlignment(SwingConstants.CENTER);
-        accountInfo.setFont(new Font("Trebuchet MS", Font.PLAIN, 16));
+        accountInfo.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        JLabel adminDashboard = new JLabel("Admin-Dashboard");
-
-        adminDashboard.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                adminDashboard.setText("<html><u>Admin-Dashboard</u></html>");
-                adminDashboard.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                adminDashboard.setText("Admin-Dashboard");
-                adminDashboard.setCursor(Cursor.getDefaultCursor());
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-                windowHandler.openWindow(WindowHandler.WindowType.ADMINDASHBOARD);
-            }
-        });
-
-        adminDashboard.setBackground(new Color(0x851417));
-        adminDashboard.setOpaque(true);
-        adminDashboard.setForeground(Color.WHITE);
-        adminDashboard.setHorizontalAlignment(SwingConstants.CENTER);
-        adminDashboard.setVerticalAlignment(SwingConstants.CENTER);
-        adminDashboard.setFont(new Font("Trebuchet MS", Font.PLAIN, 28));
-
-        JLabel staffDashboard = new JLabel("Staff-Dashboard");
-
-        staffDashboard.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                staffDashboard.setText("<html><u>Staff-Dashboard</u></html>");
-                staffDashboard.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                staffDashboard.setText("Staff-Dashboard");
-                staffDashboard.setCursor(Cursor.getDefaultCursor());
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-        });
-
-        staffDashboard.setBackground(new Color(0xAD4848));
-        staffDashboard.setOpaque(true);
-        staffDashboard.setForeground(Color.WHITE);
-        staffDashboard.setHorizontalAlignment(SwingConstants.CENTER);
-        staffDashboard.setVerticalAlignment(SwingConstants.CENTER);
-        staffDashboard.setFont(new Font("Trebuchet MS", Font.PLAIN, 28));
-
-        if (account.getAccountType().equals(AccountHandler.AccountType.ADMIN)) {
-            staffDashboard.setBounds(520, 650, 480, 50);
-            adminDashboard.setBounds(20, 650, 480, 50);
-            add(staffDashboard);
-            add(adminDashboard);
-        } else if (account.getAccountType().equals(AccountHandler.AccountType.STAFF)) {
-            staffDashboard.setBounds(20, 650, 985, 50);
-            add(staffDashboard);
-        }
-
+        channelID.setForeground(Color.WHITE);
+        channelID.setBackground(new Color(0x262626));
+        channelID.setOpaque(true);
+        channelID.setBorder(emptyBorder);
+        channelID.setHorizontalAlignment(SwingConstants.LEFT);
+        channelID.setVerticalAlignment(SwingConstants.CENTER);
+        channelID.setFont(new Font("Arial", Font.PLAIN, 16));
 
         add(accountInfo);
         add(rank);
+        add(newsTitle);
+        add(latestNews);
+        add(channelID);
+
+        add(newsBackground);
+        add(accountInfoBackground);
+
+        accountInfo.setBounds(40, 170, 250, 20);
+        channelID.setBounds(40, 190, 250, 20);
+        rank.setBounds(40, 210, 250, 20);
+        accountInfoBackground.setBounds(20, 150, 290, 100);
+
+        newsTitle.setBounds(40, 556, 300, 30);
+        latestNews.setBounds(40, 596, 300, 180);
+        newsBackground.setBounds(20, 430, 340, 260);
+        newsBackground.setBounds(20, 536, 340, 260);
+
+        latestNews.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                latestNews.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                latestNews.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                windowHandler.openNewsPage(news.getNewsKey());
+            }
+        });
     }
 
-    public static void main(String[] args) {
-        try {
-            Socket socket = new Socket("127.0.0.2", 1336);
-            PrintStream printStream = new PrintStream(socket.getOutputStream());
-            String text = """
-                    # Allgemeines #
-                    - Neue Schriftart im Haus! Sie sieht nicht nur schick aus, sondern verbessert auch die Kompatibilität.
-                    - Die Sidebar hat sich schick gemacht und ist jetzt auf kommende Updates vorbereitet.
-                    - Im Sidebar-Menü haben wir den Team-Reiter durch "Changes" ersetzt.
-                    - Du wirst es nicht übersehen: Der Update-Hinweis erstrahlt im neuen Design!
-                    - Natürlich haben wir die Sicherheit nicht vergessen – einige sicherheitstechnische Änderungen wurden vorgenommen!
-                                    
-                    # AutoShout ist da! #
-                    - Du kannst jetzt automatische Shoutouts an bestimmte User senden, wenn sie den Stream betreten.
-                                    
-                    # Anmeldung (Login) #
-                    - Keine Mini-Hänger mehr nach einem erfolgreichen Login – alles läuft jetzt butterweich!
-                    - Du kannst jetzt nicht nur einloggen, sondern auch registrieren!
-                    - Keine Sorgen mehr um gesperrte Accounts – wir haben klare Hinweise hinzugefügt!.
-                    - Wir haben ein paar kleine, verwirrende Fehler beseitigt. Nichts soll zwischen dir und deinem Stream-Spaß stehen!
-                    - Logindaten können ab sofort gespeichert werden. Bequemlichkeit, wir kommen!
-                                    
-                    # Dashboard #
-                    - Ab jetzt kannst du dein Passwort eigenhändig ändern. Du hast das Ruder in der Hand!
-                    - Hol dir die Neuigkeiten direkt ins Dashboard: Der News-Banner informiert dich jetzt über aktuelle Geschehnisse!
-                                    
-                    # AutoVIP #
-                    - Mal keine VIP-Behandlung? Kein Problem! AutoVIP deaktivieren – du hast die Kontrolle!
-                    - Kompaktere Slider, genauso leistungsstark!
-                    - Feinabstimmung leicht gemacht: Die Slider zeigen jetzt Einzelschritte für präzise Optimierung.
-                    - Die neue Whitelist verleiht VIP-Status unabhängig von Aktivität!
-                    - Die Blacklist verhindert VIP-Verleihungen. Aktuelle VIPs auf der Blacklist verabschieden sich leider.""";
-
-            printStream.println(text);
-            socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static String getNewsTeaser(News news) {
+        if (news.getText().length() <= 100) {
+            return news.getText().substring(0, news.getText().length() / 2) + "...";
+        } else {
+            return news.getText().substring(0, 100) + "...";
         }
     }
 }

@@ -10,12 +10,12 @@ public class RoundedJTextField extends JTextField {
     private int arcWidth;
     private int arcHeight;
 
-    public RoundedJTextField(int columns, Color borderColor, boolean borderRaised, int arcWidth, int arcHeight) {
-        super(columns);
-        this.borderColor = borderColor;
-        this.borderRaised = borderRaised;
-        this.arcWidth = arcWidth;
-        this.arcHeight = arcHeight;
+    public RoundedJTextField() {
+        super(10);
+        this.borderColor = new Color(0x272727);
+        this.borderRaised = false;
+        this.arcWidth = 20;
+        this.arcHeight = 40;
         setOpaque(false);
         setBorder(new EmptyBorder(0, 5, 0, 5));
     }

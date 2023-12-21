@@ -4,10 +4,20 @@ public class ToolData {
 
     private boolean maintenance_autovip;
     private boolean maintenance_autoshout;
+    private String changelog;
 
-    public ToolData(boolean maintenance_autovip, boolean maintenance_autoshout) {
+    public ToolData(boolean maintenance_autoshout, boolean maintenance_autovip, String changelog) {
         this.maintenance_autoshout = maintenance_autoshout;
         this.maintenance_autovip = maintenance_autovip;
+        this.changelog = changelog.replace("%bN%", "\\n");
+    }
+
+    public void setChangelog(String changelog) {
+        this.changelog = changelog;
+    }
+
+    public String getChangelog() {
+        return changelog.replace("%bN%", "\n");
     }
 
     public void updateMaintenance(boolean autoshout, boolean autovip) {

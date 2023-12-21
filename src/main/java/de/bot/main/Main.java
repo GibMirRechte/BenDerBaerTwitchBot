@@ -9,8 +9,6 @@ import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 
-import java.time.LocalDate;
-
 public class Main {
 
     static UpdateHandler updateHandler = new UpdateHandler();
@@ -32,9 +30,9 @@ public class Main {
     public static void main(String[] args) {
         accountHandler.loadConfig();
 
-        System.out.println(LocalDate.now().minusMonths(12));
-        System.out.println(LocalDate.now());
-        System.out.println(LocalDate.parse("2022-09-24").minusDays(2));
+        //System.out.println(LocalDate.now().minusMonths(12));
+        //System.out.println(LocalDate.now());
+        //System.out.println(LocalDate.parse("2022-09-24").minusDays(2));
         updateHandler.checkForUpdate();
 
         if (updateHandler.hasNewUpdate()) {

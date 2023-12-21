@@ -2,10 +2,12 @@ package de.bot.windows.modules;
 
 import de.bot.handler.AccountHandler;
 import de.bot.handler.ImageIconHandler;
+import de.bot.handler.UpdateHandler;
 import de.bot.handler.WindowHandler;
 import de.bot.utils.Account;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -17,13 +19,14 @@ public class Sidebar extends JPanel {
 
     AccountHandler accountHandler = AccountHandler.getInstance();
     WindowHandler windowHandler = WindowHandler.getInstance();
+    UpdateHandler updateHandler = UpdateHandler.getInstance();
 
-    public Sidebar() {
+    public Sidebar(WindowHandler.WindowType windowType) {
         Account account = accountHandler.getAccount();
 
         ImageIcon vipLabel = new ImageIcon(ImageIconHandler.imageType.VIP_ICON.imageIcon.getImage().getScaledInstance(37, 17, Image.SCALE_SMOOTH));
         ImageIcon soonLabel = new ImageIcon(ImageIconHandler.imageType.SOON_ICON.imageIcon.getImage().getScaledInstance(50, 17, Image.SCALE_SMOOTH));
-        setPreferredSize(new Dimension(255, 720));
+        setPreferredSize(new Dimension(256, 720));
         setLayout(null);
 
         setVisible(true);
@@ -35,102 +38,263 @@ public class Sidebar extends JPanel {
             e.printStackTrace();
         }
 
-        JLabel soon3 = new JLabel("Coming Soon");
+        JLabel automessages = new JLabel("AutoMessages");
+        JLabel commands = new JLabel("Befehle");
         JLabel autoVip = new JLabel("AutoVIP");
         JLabel autoShout = new JLabel("AutoShout");
-        JLabel logo;
+        JLabel staffDB = new JLabel("<html>\uD83D\uDC65 Staff-Dashboard</html>");
+        JLabel adminDB = new JLabel("<html>\uD83D\uDC64 Admin-Dashboard</html>");
+        JLabel sidebarHeader = new JLabel("<html><center>TwitchBot<br><font color=#eba134>Premium</font></center></html>");
+        sidebarHeader.setForeground(Color.WHITE);
+        sidebarHeader.setHorizontalAlignment(SwingConstants.CENTER);
+        sidebarHeader.setVerticalAlignment(SwingConstants.CENTER);
+        sidebarHeader.setFont(new Font("Arial", Font.BOLD, 20));
+        sidebarHeader.setBackground(new Color(0x1A1A1A));
+        sidebarHeader.setOpaque(true);
 
-        if (account.getAccountType().equals(AccountHandler.AccountType.PREMIUM)) {
-            logo = new JLabel(ImageIconHandler.imageType.LOGO_PREMIUM.imageIcon);
-        } else if (account.getAccountType().equals(AccountHandler.AccountType.ADMIN) ||
-                account.getAccountType().equals(AccountHandler.AccountType.STAFF)) {
-            logo = new JLabel(ImageIconHandler.imageType.LOGO_STAFF.imageIcon);
+        if (account.getAccountRank().isTeam()) {
+            sidebarHeader.setText("<html><center>TwitchBot<br><font color=red>Staff</font></center></html>");
+        } else if (account.getAccountRank().isVip()) {
+            sidebarHeader.setText("<html><center>TwitchBot<br><font color=#eba134>Premium</font></center></html>");
         } else {
-            logo = new JLabel(ImageIconHandler.imageType.LOGO_NORMAL.imageIcon);
+            sidebarHeader.setText("<html><center>TwitchBot</center></html>");
         }
 
         JLabel dashboard = new JLabel("Dashboard");
+        JLabel feedback = new JLabel("Feedback");
+        JLabel privateMessages = new JLabel("Nachrichten");
         JLabel settings = new JLabel("Einstellungen");
         JLabel support = new JLabel("Support");
-        JLabel copyright = new JLabel("Changes");
+        JLabel livechat = new JLabel("Livechat");
+        JLabel changes = new JLabel("Changes");
         JLabel discord = new JLabel("Discord");
         JLabel streams = new JLabel("Streams");
         JLabel logout = new JLabel("Logout");
+        JLabel breakLineOne = new JLabel("<html><hr>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</html>");
+        JLabel breakLineTwo = new JLabel("<html><hr>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</html>");
+        JLabel breakLineThree = new JLabel("<html><hr>⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀</html>");
 
-        copyright.setBackground(new Color(0x113F67));
-        copyright.setForeground(Color.WHITE);
-        copyright.setHorizontalAlignment(SwingConstants.CENTER);
-        copyright.setVerticalAlignment(SwingConstants.CENTER);
-        copyright.setFont(new Font("Trebuchet MS", Font.PLAIN, 15));
+        changes.setForeground(Color.WHITE);
+        changes.setHorizontalAlignment(SwingConstants.CENTER);
+        changes.setVerticalAlignment(SwingConstants.CENTER);
+        changes.setFont(new Font("Arial", Font.PLAIN, 13));
+        if (windowType.equals(WindowHandler.WindowType.CHANGELOG)) {
+            changes.setBackground(new Color(0x333333));
+            changes.setOpaque(true);
+        }
 
-        streams.setBackground(new Color(0x113F67));
         streams.setForeground(Color.WHITE);
         streams.setHorizontalAlignment(SwingConstants.CENTER);
         streams.setVerticalAlignment(SwingConstants.CENTER);
-        streams.setFont(new Font("Trebuchet MS", Font.PLAIN, 15));
+        streams.setFont(new Font("Arial", Font.PLAIN, 13));
+        if (windowType.equals(WindowHandler.WindowType.STREAMS)) {
+            streams.setBackground(new Color(0x333333));
+            streams.setOpaque(true);
+        }
 
-        logout.setBackground(new Color(0x113F67));
         logout.setForeground(Color.WHITE);
         logout.setHorizontalAlignment(SwingConstants.CENTER);
         logout.setVerticalAlignment(SwingConstants.CENTER);
-        logout.setFont(new Font("Trebuchet MS", Font.PLAIN, 15));
+        logout.setFont(new Font("Arial", Font.PLAIN, 13));
 
-        discord.setBackground(new Color(0x113F67));
         discord.setForeground(Color.WHITE);
         discord.setHorizontalAlignment(SwingConstants.CENTER);
         discord.setVerticalAlignment(SwingConstants.CENTER);
-        discord.setFont(new Font("Trebuchet MS", Font.PLAIN, 15));
+        discord.setFont(new Font("Arial", Font.PLAIN, 13));
+
+        Border emptyBorder = BorderFactory.createEmptyBorder(0, 20, 0, 0);
+
+        livechat.setForeground(Color.WHITE);
+        livechat.setIcon(soonLabel);
+        livechat.setBorder(emptyBorder);
+        livechat.setHorizontalAlignment(SwingConstants.LEFT);
+        livechat.setVerticalAlignment(SwingConstants.CENTER);
+        livechat.setVerticalTextPosition(SwingConstants.TOP);
+        livechat.setHorizontalTextPosition(SwingConstants.LEADING);
+        livechat.setFont(new Font("Arial", Font.PLAIN, 16));
+        if (windowType.equals(WindowHandler.WindowType.LIVECHAT)) {
+            livechat.setBackground(new Color(0x333333));
+            livechat.setOpaque(true);
+        }
 
         settings.setForeground(Color.WHITE);
-        settings.setHorizontalAlignment(SwingConstants.CENTER);
+        settings.setBorder(emptyBorder);
+        settings.setHorizontalAlignment(SwingConstants.LEFT);
         settings.setVerticalAlignment(SwingConstants.CENTER);
-        settings.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+        settings.setFont(new Font("Arial", Font.PLAIN, 16));
+        if (windowType.equals(WindowHandler.WindowType.SETTINGS)) {
+            settings.setBackground(new Color(0x333333));
+            settings.setOpaque(true);
+        }
 
-        support.setBackground(new Color(0x113F67));
+        feedback.setForeground(Color.WHITE);
+        feedback.setBorder(emptyBorder);
+        feedback.setHorizontalAlignment(SwingConstants.LEFT);
+        feedback.setVerticalAlignment(SwingConstants.CENTER);
+        feedback.setFont(new Font("Arial", Font.PLAIN, 16));
+        if (windowType.equals(WindowHandler.WindowType.FEEDBACK)) {
+            feedback.setBackground(new Color(0x333333));
+            feedback.setOpaque(true);
+        }
+
         support.setForeground(Color.WHITE);
-        support.setHorizontalAlignment(SwingConstants.CENTER);
+        support.setIcon(soonLabel);
+        support.setBorder(emptyBorder);
+        support.setHorizontalAlignment(SwingConstants.LEFT);
         support.setVerticalAlignment(SwingConstants.CENTER);
-        support.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+        support.setVerticalTextPosition(SwingConstants.TOP);
+        support.setHorizontalTextPosition(SwingConstants.LEADING);
+        support.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        soon3.setBackground(new Color(0x113F67));
-        soon3.setForeground(Color.WHITE);
-        soon3.setHorizontalAlignment(SwingConstants.CENTER);
-        soon3.setVerticalAlignment(SwingConstants.CENTER);
-        soon3.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+        privateMessages.setForeground(Color.WHITE);
+        privateMessages.setIcon(soonLabel);
+        privateMessages.setBorder(emptyBorder);
+        privateMessages.setHorizontalAlignment(SwingConstants.LEFT);
+        privateMessages.setVerticalAlignment(SwingConstants.CENTER);
+        privateMessages.setVerticalTextPosition(SwingConstants.TOP);
+        privateMessages.setHorizontalTextPosition(SwingConstants.LEADING);
+        privateMessages.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        dashboard.setBackground(new Color(0x113F67));
+        automessages.setForeground(Color.WHITE);
+        automessages.setIcon(soonLabel);
+        automessages.setHorizontalAlignment(SwingConstants.LEFT);
+        automessages.setVerticalAlignment(SwingConstants.CENTER);
+        automessages.setVerticalTextPosition(SwingConstants.TOP);
+        automessages.setHorizontalTextPosition(SwingConstants.LEADING);
+        automessages.setFont(new Font("Arial", Font.PLAIN, 16));
+        automessages.setBorder(emptyBorder);
+        if (windowType.equals(WindowHandler.WindowType.AUTOMESSAGES)) {
+            automessages.setBackground(new Color(0x333333));
+            automessages.setOpaque(true);
+        }
+
+        adminDB.setForeground(Color.WHITE);
+        adminDB.setHorizontalAlignment(SwingConstants.LEFT);
+        adminDB.setVerticalAlignment(SwingConstants.CENTER);
+        adminDB.setFont(new Font("Arial", Font.PLAIN, 16));
+        adminDB.setBorder(emptyBorder);
+        if (windowType.equals(WindowHandler.WindowType.ADMINDASHBOARD) ||
+                windowType.equals(WindowHandler.WindowType.ADMINDASH_USERMANAGEMENT) ||
+                windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATENEWS) ||
+                windowType.equals(WindowHandler.WindowType.ADMINDASH_NEWSMANAGEMENT) ||
+                windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATEUSER) ||
+                windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATERANK)) {
+            adminDB.setBackground(new Color(0x333333));
+            adminDB.setOpaque(true);
+        }
+
+        staffDB.setForeground(Color.WHITE);
+        staffDB.setHorizontalAlignment(SwingConstants.LEFT);
+        staffDB.setVerticalAlignment(SwingConstants.CENTER);
+        staffDB.setFont(new Font("Arial", Font.PLAIN, 16));
+        staffDB.setBorder(emptyBorder);
+        if (windowType.equals(WindowHandler.WindowType.STAFFDASHBOARD) ||
+                windowType.equals(WindowHandler.WindowType.BanUser) ||
+                windowType.equals(WindowHandler.WindowType.WarnUser) ||
+                windowType.equals(WindowHandler.WindowType.UserInfo)) {
+            staffDB.setBackground(new Color(0x333333));
+            staffDB.setOpaque(true);
+        }
+
+        commands.setForeground(Color.WHITE);
+        commands.setIcon(soonLabel);
+        commands.setHorizontalAlignment(SwingConstants.LEFT);
+        commands.setVerticalAlignment(SwingConstants.CENTER);
+        commands.setVerticalTextPosition(SwingConstants.TOP);
+        commands.setBorder(emptyBorder);
+        commands.setHorizontalTextPosition(SwingConstants.LEADING);
+        commands.setFont(new Font("Arial", Font.PLAIN, 16));
+
         dashboard.setForeground(Color.WHITE);
-        dashboard.setHorizontalAlignment(SwingConstants.CENTER);
+        dashboard.setHorizontalAlignment(SwingConstants.LEFT);
         dashboard.setVerticalAlignment(SwingConstants.CENTER);
-        dashboard.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+        dashboard.setBorder(emptyBorder);
+        dashboard.setFont(new Font("Arial", Font.PLAIN, 16));
+        if (windowType.equals(WindowHandler.WindowType.DASHBOARD)) {
+            dashboard.setBackground(new Color(0x333333));
+            dashboard.setOpaque(true);
+        }
 
-        autoVip.setBackground(new Color(0x113F67));
         autoVip.setForeground(Color.WHITE);
-        autoVip.setHorizontalAlignment(SwingConstants.CENTER);
+        autoVip.setHorizontalAlignment(SwingConstants.LEFT);
         autoVip.setVerticalAlignment(SwingConstants.CENTER);
-        autoVip.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+        autoVip.setFont(new Font("Arial", Font.PLAIN, 16));
         autoVip.setIcon(vipLabel);
         autoVip.setVerticalTextPosition(SwingConstants.TOP);
         autoVip.setHorizontalTextPosition(SwingConstants.LEADING);
         autoVip.setIconTextGap(5);
+        autoVip.setBorder(emptyBorder);
+        if (windowType.equals(WindowHandler.WindowType.AUTOVIP)) {
+            autoVip.setBackground(new Color(0x333333));
+            autoVip.setOpaque(true);
+        }
 
-        autoShout.setBackground(new Color(0x113F67));
         autoShout.setForeground(Color.WHITE);
-        autoShout.setHorizontalAlignment(SwingConstants.CENTER);
+        autoShout.setHorizontalAlignment(SwingConstants.LEFT);
         autoShout.setVerticalAlignment(SwingConstants.CENTER);
-        autoShout.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+        autoShout.setFont(new Font("Arial", Font.PLAIN, 16));
         autoShout.setIconTextGap(5);
+        autoShout.setBorder(emptyBorder);
+        if (windowType.equals(WindowHandler.WindowType.AUTOSHOUT)) {
+            autoShout.setBackground(new Color(0x333333));
+            autoShout.setOpaque(true);
+        }
+
+        livechat.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                livechat.setBackground(new Color(0x333333));
+                livechat.setOpaque(true);
+                livechat.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (!windowType.equals(WindowHandler.WindowType.LIVECHAT)) {
+                    livechat.setBackground(null);
+                    livechat.setOpaque(false);
+                }
+                livechat.setCursor(Cursor.getDefaultCursor());
+            }
+        });
+
+        feedback.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                feedback.setBackground(new Color(0x333333));
+                feedback.setOpaque(true);
+                feedback.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (!windowType.equals(WindowHandler.WindowType.FEEDBACK)) {
+                    feedback.setBackground(null);
+                    feedback.setOpaque(false);
+                }
+                feedback.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                windowHandler.openWindow(WindowHandler.WindowType.FEEDBACK);
+            }
+        });
 
         settings.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                settings.setText("<html><u>Einstellungen</u></html>");
+                settings.setBackground(new Color(0x333333));
+                settings.setOpaque(true);
                 settings.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                settings.setText("Einstellungen");
+                if (!windowType.equals(WindowHandler.WindowType.SETTINGS)) {
+                    settings.setBackground(null);
+                    settings.setOpaque(false);
+                }
                 settings.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -143,13 +307,17 @@ public class Sidebar extends JPanel {
         dashboard.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                dashboard.setText("<html><u>Dashboard</u></html>");
+                dashboard.setBackground(new Color(0x333333));
+                dashboard.setOpaque(true);
                 dashboard.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                dashboard.setText("Dashboard");
+                if (!windowType.equals(WindowHandler.WindowType.DASHBOARD)) {
+                    dashboard.setBackground(null);
+                    dashboard.setOpaque(false);
+                }
                 dashboard.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -159,16 +327,140 @@ public class Sidebar extends JPanel {
             }
         });
 
+        staffDB.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                staffDB.setBackground(new Color(0x333333));
+                staffDB.setOpaque(true);
+                staffDB.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (!windowType.equals(WindowHandler.WindowType.STAFFDASHBOARD) &&
+                        !windowType.equals(WindowHandler.WindowType.UserInfo) &&
+                        !windowType.equals(WindowHandler.WindowType.BanUser) &&
+                        !windowType.equals(WindowHandler.WindowType.WarnUser)) {
+                    staffDB.setBackground(null);
+                    staffDB.setOpaque(false);
+                }
+                staffDB.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                windowHandler.openWindow(WindowHandler.WindowType.STAFFDASHBOARD);
+            }
+        });
+
+        adminDB.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                adminDB.setBackground(new Color(0x333333));
+                adminDB.setOpaque(true);
+                adminDB.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (!windowType.equals(WindowHandler.WindowType.ADMINDASHBOARD) &&
+                        !windowType.equals(WindowHandler.WindowType.ADMINDASH_USERMANAGEMENT) &&
+                        !windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATENEWS) &&
+                        !windowType.equals(WindowHandler.WindowType.ADMINDASH_NEWSMANAGEMENT) &&
+                        !windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATEUSER)) {
+                    adminDB.setBackground(null);
+                    adminDB.setOpaque(false);
+                }
+                adminDB.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                windowHandler.openWindow(WindowHandler.WindowType.ADMINDASHBOARD);
+            }
+        });
+
+        privateMessages.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                privateMessages.setBackground(new Color(0x333333));
+                privateMessages.setOpaque(true);
+                privateMessages.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (!windowType.equals(WindowHandler.WindowType.PRIVATE_MESSAGES)) {
+                    privateMessages.setBackground(null);
+                    privateMessages.setOpaque(false);
+                }
+                privateMessages.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+        });
+
+        commands.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                commands.setBackground(new Color(0x333333));
+                commands.setOpaque(true);
+                commands.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (!windowType.equals(WindowHandler.WindowType.COMMANDS)) {
+                    commands.setBackground(null);
+                    commands.setOpaque(false);
+                }
+                commands.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+        });
+
+        automessages.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                automessages.setBackground(new Color(0x333333));
+                automessages.setOpaque(true);
+                automessages.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                if (!windowType.equals(WindowHandler.WindowType.AUTOMESSAGES)) {
+                    automessages.setBackground(null);
+                    automessages.setOpaque(false);
+                }
+                automessages.setCursor(Cursor.getDefaultCursor());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                windowHandler.openWindow(WindowHandler.WindowType.AUTOMESSAGES);
+            }
+        });
+
         streams.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                streams.setText("<html><u>Streams</u></html>");
+                streams.setBackground(new Color(0x333333));
+                streams.setOpaque(true);
                 streams.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                streams.setText("Streams");
+                if (!windowType.equals(WindowHandler.WindowType.STREAMS)) {
+                    streams.setBackground(null);
+                    streams.setOpaque(false);
+                }
                 streams.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -181,13 +473,15 @@ public class Sidebar extends JPanel {
         logout.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                logout.setText("<html><u>Logout</u></html>");
+                logout.setBackground(new Color(0x333333));
+                logout.setOpaque(true);
                 logout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                logout.setText("Logout");
+                logout.setBackground(null);
+                logout.setOpaque(false);
                 logout.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -201,19 +495,20 @@ public class Sidebar extends JPanel {
         discord.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                discord.setText("<html><u>Discord</u></html>");
+                discord.setBackground(new Color(0x333333));
+                discord.setOpaque(true);
                 discord.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                discord.setText("Discord");
+                discord.setBackground(null);
+                discord.setOpaque(false);
                 discord.setCursor(Cursor.getDefaultCursor());
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                discord.setBackground(new Color(0x113F67));
             }
 
             @Override
@@ -229,32 +524,39 @@ public class Sidebar extends JPanel {
         support.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                support.setText("<html><u>Support</u></html>");
+                support.setBackground(new Color(0x333333));
+                support.setOpaque(true);
                 support.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                support.setText("Support");
+                if (!windowType.equals(WindowHandler.WindowType.SUPPORT)) {
+                    support.setBackground(null);
+                    support.setOpaque(false);
+                }
                 support.setCursor(Cursor.getDefaultCursor());
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                support.setBackground(new Color(0x113F67));
             }
         });
 
         autoShout.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                autoShout.setText("<html><u>AutoShout</u></html>");
+                autoShout.setBackground(new Color(0x333333));
+                autoShout.setOpaque(true);
                 autoShout.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                autoShout.setText("AutoShout");
+                if (!windowType.equals(WindowHandler.WindowType.AUTOSHOUT)) {
+                    autoShout.setBackground(null);
+                    autoShout.setOpaque(false);
+                }
                 autoShout.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -267,13 +569,17 @@ public class Sidebar extends JPanel {
         autoVip.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                autoVip.setText("<html><u>AutoVIP</u></html>");
+                autoVip.setBackground(new Color(0x333333));
+                autoVip.setOpaque(true);
                 autoVip.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                autoVip.setText("AutoVIP");
+                if (!windowType.equals(WindowHandler.WindowType.AUTOVIP)) {
+                    autoVip.setBackground(null);
+                    autoVip.setOpaque(false);
+                }
                 autoVip.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -283,54 +589,84 @@ public class Sidebar extends JPanel {
             }
         });
 
-        copyright.addMouseListener(new MouseAdapter() {
+        changes.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                copyright.setText("<html><u>Changes</u></html>");
-                copyright.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                changes.setBackground(new Color(0x333333));
+                changes.setOpaque(true);
+                changes.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                copyright.setText("Changes");
-                copyright.setCursor(Cursor.getDefaultCursor());
+                if (!windowType.equals(WindowHandler.WindowType.CHANGELOG)) {
+                    changes.setBackground(null);
+                    changes.setOpaque(false);
+                }
+                changes.setCursor(Cursor.getDefaultCursor());
             }
 
             @Override
             public void mousePressed(MouseEvent e) {
-                windowHandler.openWindow(WindowHandler.WindowType.CHANGELOG);
+                windowHandler.openNewsPage("Changelogv" + updateHandler.getCurrentVersion());
             }
         });
 
-        add(copyright);
+        if (account.getAccountRank().isAdmin_team()) {
+            add(breakLineThree);
+            breakLineThree.setBounds(35, 490, 180, 20);
+            add(adminDB);
+            adminDB.setBounds(35, 506, 180, 35);
+            add(staffDB);
+            staffDB.setBounds(35, 542, 180, 35);
+        } else if (account.getAccountRank().isTeam()) {
+            add(breakLineThree);
+            breakLineThree.setBounds(35, 490, 180, 20);
+            add(staffDB);
+            staffDB.setBounds(35, 506, 180, 35);
+        }
+
+        add(breakLineOne);
+        add(breakLineTwo);
+        add(changes);
         add(logout);
         add(discord);
         add(autoVip);
         add(autoShout);
-        add(logo);
+        add(sidebarHeader);
+        add(feedback);
         add(dashboard);
         add(settings);
         add(streams);
         add(support);
-        add(soon3);
+        add(automessages);
+        add(commands);
+        add(privateMessages);
+        add(livechat);
 
-        logo.setBounds(5, 10, 245, 125);
-        dashboard.setBounds(5, 150, 245, 50);
-        autoShout.setBounds(5, 210, 245, 50);
-        autoVip.setBounds(5, 270, 245, 50);
-        soon3.setBounds(5, 330, 245, 50);
-        settings.setBounds(5, 390, 245, 50);
-        support.setBounds(5, 450, 245, 50);
-        copyright.setBounds(71, 680, 61, 30);
-        streams.setBounds(132, 680, 61, 30);
-        logout.setBounds(193, 680, 61, 30);
-        discord.setBounds(5, 680, 61, 30);
+        sidebarHeader.setBounds(0, 0, 255, 75);
+        dashboard.setBounds(32, 100, 192, 35);
+        breakLineOne.setBounds(32, 135, 192, 20);
+        autoShout.setBounds(32, 151, 192, 35);
+        autoVip.setBounds(32, 187, 192, 35);
+        automessages.setBounds(32, 223, 192, 35);
+        commands.setBounds(32, 259, 192, 35);
+        breakLineTwo.setBounds(32, 295, 192, 20);
+        feedback.setBounds(32, 311, 192, 35);
+        privateMessages.setBounds(32, 347, 192, 35);
+        settings.setBounds(32, 383, 192, 35);
+        support.setBounds(32, 419, 192, 35);
+        livechat.setBounds(32, 455, 192, 35);
+        changes.setBounds(66, 776, 61, 30);
+        streams.setBounds(127, 776, 61, 30);
+        logout.setBounds(188, 776, 61, 30);
+        discord.setBounds(5, 776, 61, 30);
 
         JLabel sidebarBackground = new JLabel("");
-        sidebarBackground.setBounds(0, 0, 255, 720);
+        sidebarBackground.setBounds(0, 0, 256, 816);
         sidebarBackground.setOpaque(true);
         add(sidebarBackground);
-        sidebarBackground.setBackground(new Color(0x113F67));
+        sidebarBackground.setBackground(new Color(0x262626));
 
     }
 }

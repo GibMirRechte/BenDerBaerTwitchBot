@@ -1,7 +1,6 @@
 package de.bot.utils;
 
 import com.github.twitch4j.TwitchClient;
-import de.bot.handler.AccountHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,33 +12,40 @@ public class Account {
     private final String channelID;
     private final String accessToken;
     private final String refreshToken;
-    private final AccountHandler.AccountType accountType;
+    private final AccountRank accountRank;
     private final BanData banData;
     private TwitchClient twitchClient;
     private final AutoVIPSettings autoVIPSettings;
     private final AutoShoutSettings autoShoutSettings;
     private final List<String> autoshout_Cache = new ArrayList<>();
+    private final AutoMessagesSettings autoMessagesSettings;
+    private long lastFeedback = 0;
 
 
     //TwitchClient benderbaer = TwitchClientBuilder.builder().withEnableHelix(Boolean.TRUE).withClientId("gp762nuuoqcoxypju8c569th9wz7q5").withChatAccount(new OAuth2Credential("twitch", accessToken)).withEnableChat(Boolean.TRUE).build();
 
 
-    public Account(String name, String password, String channelID, String accessToken, String refreshToken, AccountHandler.AccountType accountType, AutoVIPSettings autoVIPSettings, AutoShoutSettings autoShoutSettings, BanData banData) {
+    public Account(String name, String password, String channelID, String accessToken, String refreshToken, AccountRank accountRank, AutoVIPSettings autoVIPSettings, AutoShoutSettings autoShoutSettings, AutoMessagesSettings autoMessagesSettings, BanData banData) {
         this.name = name;
         this.password = password;
         this.channelID = channelID;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
-        this.accountType = accountType;
+        this.accountRank = accountRank;
         this.banData = banData;
         this.autoVIPSettings = autoVIPSettings;
+        this.autoMessagesSettings = autoMessagesSettings;
         this.autoShoutSettings = autoShoutSettings;
 
-        if (!banData.isActiveBan()) {
+        if (!banData.isActive()) {
             //this.twitchClient = TwitchClientBuilder.builder().withEnableHelix(Boolean.TRUE).withClientId("gp762nuuoqcoxypju8c569th9wz7q5").withChatAccount(new OAuth2Credential("twitch", this.accessToken)).withEnableChat(Boolean.TRUE).build();
             //this.twitchClient.getChat().joinChannel(this.name);
             //this.twitchClient.getEventManager().onEvent(ChannelMessageEvent.class, event -> new OnChannelMessageEvent().printChannelMessage(event));
         }
+    }
+
+    public AutoMessagesSettings getAutoMessagesSettings() {
+        return autoMessagesSettings;
     }
 
     public List<String> getAutoshout_Cache() {
@@ -82,8 +88,16 @@ public class Account {
         return this.password;
     }
 
-    public AccountHandler.AccountType getAccountType() {
-        return this.accountType;
+    public AccountRank getAccountRank() {
+        return this.accountRank;
+    }
+
+    public boolean canSendNewFeedback() {
+        return this.lastFeedback < (System.currentTimeMillis() - 30000);
+    }
+
+    public void updateLastFeedback() {
+        this.lastFeedback = System.currentTimeMillis();
     }
 
 }

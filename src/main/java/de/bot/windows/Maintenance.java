@@ -12,7 +12,7 @@ public class Maintenance extends JPanel {
     UpdateHandler updateHandler = UpdateHandler.getInstance();
 
     public Maintenance(String title) {
-        setPreferredSize(new Dimension(1025, 720));
+        setPreferredSize(new Dimension(1040, 816));
         setLayout(null);
 
         Announcement an = updateHandler.getAnnouncement();
@@ -29,7 +29,7 @@ public class Maintenance extends JPanel {
             announcement.setIcon(ImageIconHandler.imageType.INFO_ICON.imageIcon);
         }
         announcement.setHorizontalTextPosition(JLabel.RIGHT);
-        announcement.setFont(new Font("Trebuchet MS", Font.PLAIN, 14));
+        announcement.setFont(new Font("Arial", Font.PLAIN, 14));
         announcement.setBounds(183, 75, 660, 40);
         add(announcement);
 
@@ -38,7 +38,7 @@ public class Maintenance extends JPanel {
         titleLabel.setForeground(Color.WHITE);
         titleLabel.setHorizontalAlignment(SwingConstants.LEFT);
         titleLabel.setVerticalAlignment(SwingConstants.CENTER);
-        titleLabel.setFont(new Font("Trebuchet MS", Font.PLAIN, 36));
+        titleLabel.setFont(new Font("Arial", Font.PLAIN, 36));
         add(titleLabel);
 
         JLabel message = new JLabel("<html><center><b>HINWEIS</b><br><br>" + title + " ist zurzeit im Wartungsmodus.<br>Bitte versuche es später erneut.</center></html>");
@@ -48,9 +48,9 @@ public class Maintenance extends JPanel {
         message.setForeground(Color.WHITE);
         message.setHorizontalAlignment(SwingConstants.CENTER);
         message.setVerticalAlignment(SwingConstants.CENTER);
-        message.setFont(new Font("Trebuchet MS", Font.PLAIN, 25));
+        message.setFont(new Font("Arial", Font.PLAIN, 25));
 
-        message.setBounds(182, 185, 660, 350);
+        message.setBounds(182, 235, 660, 350);
 
         add(message);
 

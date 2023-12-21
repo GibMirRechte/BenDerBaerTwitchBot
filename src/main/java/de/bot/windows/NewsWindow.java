@@ -4,6 +4,7 @@ import de.bot.handler.AccountHandler;
 import de.bot.handler.ImageIconHandler;
 import de.bot.handler.UpdateHandler;
 import de.bot.utils.Announcement;
+import de.bot.utils.News;
 import de.bot.windows.modules.CustomScrollBar;
 
 import javax.swing.*;
@@ -13,13 +14,15 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.PrintStream;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-public class Changelog extends JPanel {
+public class NewsWindow extends JPanel {
 
     UpdateHandler updateHandler = UpdateHandler.getInstance();
     AccountHandler accountHandler = AccountHandler.getInstance();
 
-    public Changelog() {
+    public NewsWindow(News news) {
         Announcement an = updateHandler.getAnnouncement();
 
         setPreferredSize(new Dimension(1040, 816));
@@ -49,11 +52,23 @@ public class Changelog extends JPanel {
         announcement.setBounds(183, 75, 660, 40);
         add(announcement);
 
-        JLabel title = new JLabel("Changelog v" + updateHandler.getCurrentVersion());
-        JLabel autor = new JLabel("<html>Gepostet von <font color=red>GibMirRechte</font></html>");
+        JLabel title = new JLabel(news.getTitle());
+        JLabel autor = new JLabel("<html>Gepostet von <font color=" + news.getCreatorAccountRank().getHtmlColor() + ">" + news.getCreator() + "</font></html>");
         JLabel background = new JLabel();
+        JLabel date = new JLabel();
+
+        Border emptyBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+
         add(title);
         add(autor);
+
+        String formattedDate = new SimpleDateFormat("dd.MM.yyyy HH:mm 'Uhr'").format(new Date(news.getCreated()));
+
+        date.setText(formattedDate);
+        date.setForeground(Color.GRAY);
+        date.setVerticalAlignment(SwingConstants.CENTER);
+        date.setHorizontalAlignment(SwingConstants.CENTER);
+        date.setFont(new Font("Arial", Font.ITALIC, 15));
 
         background.setBackground(new Color(0x1A1A1A));
         background.setVisible(true);
@@ -61,13 +76,14 @@ public class Changelog extends JPanel {
         background.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
 
 
-        String labelText = updateHandler.getToolData().getChangelog();
+        String labelText = news.getText();
 
         JTextArea changelog = new JTextArea(labelText);
         changelog.setEditable(false);
         changelog.setLineWrap(true);
         changelog.setWrapStyleWord(true);
         changelog.setForeground(Color.WHITE);
+        changelog.setBorder(emptyBorder);
         changelog.setBackground(new Color(0x272727));
         changelog.setFont(new Font("Arial", Font.PLAIN, 18));
 
@@ -90,6 +106,7 @@ public class Changelog extends JPanel {
         autor.setHorizontalAlignment(SwingConstants.CENTER);
         autor.setVerticalAlignment(SwingConstants.CENTER);
         autor.setFont(new Font("Arial", Font.ITALIC, 15));
+        autor.setIcon(new ImageIcon(accountHandler.getBadge(news.getCreatorAccountRank())));
         autor.setHorizontalTextPosition(SwingConstants.LEADING);
         autor.setIconTextGap(5);
 
@@ -101,6 +118,7 @@ public class Changelog extends JPanel {
 
         title.setBounds(338, 158, 350, 30);
         autor.setBounds(312, 193, 400, 20);
+        date.setBounds(412, 215, 200, 20);
         scrollPane.setBounds(40, 245, 960, 530);
         background.setBounds(20, 133, 1000, 662);
 
@@ -124,18 +142,19 @@ public class Changelog extends JPanel {
             cancelButton.setVerticalAlignment(SwingConstants.CENTER);
             cancelButton.setFont(new Font("Arial", Font.PLAIN, 28));
 
-            JTextArea editArea = new JTextArea(changelog.getText());
+            JTextArea editArea = new JTextArea("<html>" + changelog.getText() + "</html>");
             editArea.setBounds(scrollPane.getBounds());
             editArea.setForeground(Color.WHITE);
             editArea.setBackground(new Color(0x262626));
             editArea.setVisible(false);
             editArea.setEditable(true);
+            editArea.setBorder(emptyBorder);
             editArea.setFont(new Font("Arial", Font.PLAIN, 18));
 
             JScrollPane scrollPaneEditable = new JScrollPane(editArea);
             scrollPaneEditable.setBounds(scrollPane.getBounds());
-            scrollPaneEditable.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             scrollPaneEditable.setBorder(null);
+            scrollPaneEditable.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
             scrollPaneEditable.getVerticalScrollBar().setUI(new CustomScrollBar());
             scrollPaneEditable.getHorizontalScrollBar().setUI(new CustomScrollBar());
             scrollPaneEditable.getViewport().setBackground(Color.BLUE);
@@ -184,13 +203,15 @@ public class Changelog extends JPanel {
                                 Socket socket = new Socket("45.93.249.139", 3459);
                                 PrintStream printStream = new PrintStream(socket.getOutputStream());
                                 String text = editArea.getText();
-                                printStream.println("SAVE");
-                                printStream.println("CHANGELOG");
-                                printStream.println(updateHandler.getCurrentVersion());
-                                printStream.println(text.replace("\n", "%bN%"));
+                                printStream.println("NEWS");
                                 printStream.println(accountHandler.getAccount().getName());
+                                printStream.println("EDIT");
+                                printStream.println(news.getNewsKey());
+                                printStream.println(title.getText());
+                                printStream.println(text.replace("\n", "&&&-"));
                                 socket.close();
-                                updateHandler.getToolData().setChangelog(text);
+                                news.setTitle(title.getText());
+                                news.setText(text);
                             } catch (Exception exc) {
                                 exc.printStackTrace();
                             }
@@ -213,7 +234,9 @@ public class Changelog extends JPanel {
             add(cancelButton);
             add(editButton);
             add(scrollPaneEditable);
-            add(background);
         }
+
+        add(date);
+        add(background);
     }
 }

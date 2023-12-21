@@ -1,40 +1,54 @@
 package de.bot.handler;
 
-import de.bot.utils.Account;
+import de.bot.utils.*;
 
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AccountHandler {
 
     private Account account;
     static AccountHandler instance;
+    private HashMap<String, AccountRank> accountRanks = new HashMap<>();
 
     public enum AccountType {
-        ADMIN(new Color(0xBE0000), "Admin"),
-        STAFF(new Color(0xFE3F3F), "Team"),
-        PREMIUM(new Color(0xEFC210), "Premium"),
-        NORMAL(new Color(0x5D5D5D), "User");
+        SYSTEM(new Color(0xBE0000), "System", "BE0000", true),
+        ADMIN(new Color(0xBE0000), "Admin", "BE0000", true),
+        SR_MODERATOR(new Color(0xFE3F3F), "Senior-Moderator", "FE3F3F", true),
+        MODERATOR(new Color(0xFE3F3F), "Team", "FE3F3F", true),
+        PREMIUM(new Color(0xEFC210), "Premium", "EFC210", false),
+        NORMAL(new Color(0x5D5D5D), "User", "5D5D5D", false);
 
         public final Color badgeColor;
         public final String badgeName;
+        public final String htmlColor;
+        public final boolean team;
 
-        AccountType(Color badgeColor, String badgeName) {
+        AccountType(Color badgeColor, String badgeName, String htmlColor, boolean team) {
             this.badgeColor = badgeColor;
             this.badgeName = badgeName;
+            this.htmlColor = htmlColor;
+            this.team = team;
+        }
+
+        public String getHtmlColor() {
+            return htmlColor;
         }
     }
 
-    public Image getBadge(AccountType accountType) {
+    public Image getBadge(AccountRank accountRank) {
         BufferedImage tempImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2dTemp = tempImage.createGraphics();
-        g2dTemp.setFont(new Font("Trebuchet MS", Font.BOLD, 16));
+        g2dTemp.setFont(new Font("Arial", Font.BOLD, 14));
         FontMetrics fm = g2dTemp.getFontMetrics();
-        int textWidth = fm.stringWidth(accountType.badgeName);
+        int textWidth = fm.stringWidth(accountRank.getTitle());
         int textHeight = fm.getHeight();
         g2dTemp.dispose();
 
@@ -46,17 +60,17 @@ public class AccountHandler {
 
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(0, 0, width, height, 20, 20);
-        g2d.setColor(accountType.badgeColor);
+        RoundRectangle2D roundedRectangle = new RoundRectangle2D.Double(0, 0, width, height, 0, 0);
+        g2d.setColor(accountRank.getRgbColor());
         g2d.fill(roundedRectangle);
 
         g2d.setColor(Color.WHITE);
-        g2d.setFont(new Font("Trebuchet MS", Font.BOLD, 16));
+        g2d.setFont(new Font("Arial", Font.BOLD, 14));
 
         int x = (width - textWidth) / 2;
         int y = (height - textHeight) / 2 + fm.getAscent();
 
-        g2d.drawString(accountType.badgeName, x, y);
+        g2d.drawString(accountRank.getTitle(), x, y);
         g2d.dispose();
 
         return image;
@@ -75,6 +89,13 @@ public class AccountHandler {
         if (instance == null)
             instance = new AccountHandler();
         return instance;
+    }
+
+    public void setAccountRanks(HashMap<String, AccountRank> list) {
+        accountRanks.clear();
+        for (String s : list.keySet()) {
+            accountRanks.put(s, list.get(s));
+        }
     }
 
     public enum ConfigType {
@@ -107,6 +128,92 @@ public class AccountHandler {
         } catch (IOException e) {
             createConfig();
         }
+    }
+
+    public ExternalUser getExternalUser(String username) {
+        try {
+            Socket socket = new Socket("45.93.249.139", 3459);
+            OutputStream outputStream = socket.getOutputStream();
+            PrintStream printStream = new PrintStream(outputStream);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            printStream.println("GET_USER");
+            printStream.println("StaffDB");
+            printStream.println(username);
+
+            boolean validUser = Boolean.parseBoolean(bufferedReader.readLine());
+
+            if (validUser) {
+                String name = bufferedReader.readLine();
+                String password = bufferedReader.readLine();
+                String accessToken = bufferedReader.readLine();
+                String refreshToken = bufferedReader.readLine();
+                String channelID = bufferedReader.readLine();
+                AccountRank accountRank = getRank(bufferedReader.readLine());
+
+                int bans = Integer.parseInt(bufferedReader.readLine());
+                java.util.List<BanData> banList = new ArrayList<>();
+
+                for (int i = 0; i < bans; i++) {
+                    String reason = bufferedReader.readLine();
+                    String operator = bufferedReader.readLine();
+                    String operatorColor = bufferedReader.readLine();
+                    long bannedAt = Long.parseLong(bufferedReader.readLine());
+                    long bannedUntil = Long.parseLong(bufferedReader.readLine());
+                    boolean cancelled = Boolean.parseBoolean(bufferedReader.readLine());
+                    String cancelledBy = bufferedReader.readLine();
+                    String cancelledByColor = bufferedReader.readLine();
+                    String cancelledReason = bufferedReader.readLine();
+                    long cancelledAt = Long.parseLong(bufferedReader.readLine());
+
+                    BanData banData = new BanData(reason, operator, operatorColor, bannedAt, bannedUntil, cancelled, cancelledBy, cancelledByColor, cancelledReason, cancelledAt);
+                    banList.add(banData);
+                }
+
+                int warns = Integer.parseInt(bufferedReader.readLine());
+                List<Warn> warnList = new ArrayList<>();
+                for (int i = 0; i < warns; i++) {
+                    String reason = bufferedReader.readLine();
+                    String operator = bufferedReader.readLine();
+                    String operatorColor = bufferedReader.readLine();
+                    long timestamp = Long.parseLong(bufferedReader.readLine());
+                    boolean cancelled = Boolean.parseBoolean(bufferedReader.readLine());
+                    String cancelledBy = bufferedReader.readLine();
+                    String cancelledByColor = bufferedReader.readLine();
+                    String cancelledReason = bufferedReader.readLine();
+                    long cancelledAt = Long.parseLong(bufferedReader.readLine());
+                    Warn warn = new Warn(reason, operator, operatorColor, timestamp, cancelled, cancelledBy, cancelledByColor, cancelledReason, cancelledAt);
+                    warnList.add(warn);
+                }
+                String modCommentCreator = bufferedReader.readLine();
+                AccountRank creatorRank = getRank(bufferedReader.readLine());
+
+                String modComment = bufferedReader.readLine();
+
+                ExternalUser externalUser = new ExternalUser(name, password, accessToken, refreshToken, channelID, accountRank, modCommentCreator, creatorRank, modComment, banList, warnList);
+                return externalUser;
+            } else {
+                throw new Exception("User " + username + " existiert nicht.");
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return null;
+    }
+
+    public AccountRank getRank(String name) {
+        if (accountRanks.containsKey(name))
+            return accountRanks.get(name);
+
+        for (AccountRank accountRank : accountRanks.values()) {
+            if (accountRank.isDefaultRank()) return accountRank;
+        }
+
+        return null;
+    }
+
+    public HashMap<String, AccountRank> getAccountRanks() {
+        return accountRanks;
     }
 
     public String getData(ConfigType configType) {
