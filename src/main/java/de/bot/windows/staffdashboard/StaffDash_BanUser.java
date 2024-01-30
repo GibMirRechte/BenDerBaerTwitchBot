@@ -63,10 +63,27 @@ public class StaffDash_BanUser extends JPanel {
         add(titleLabel);
 
         JLabel banHistoryBackground = new JLabel();
-        banHistoryBackground.setBounds(605, 175, 400, 450);
         banHistoryBackground.setBackground(new Color(0x262626));
         banHistoryBackground.setOpaque(true);
         banHistoryBackground.setVisible(true);
+
+        JLabel banHistoryBackground2 = new JLabel();
+        banHistoryBackground2.setBackground(new Color(0x1A1A1A));
+        banHistoryBackground2.setVisible(true);
+        banHistoryBackground2.setOpaque(true);
+        banHistoryBackground2.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
+
+        JLabel commendBackground = new JLabel();
+        commendBackground.setBackground(new Color(0x1A1A1A));
+        commendBackground.setVisible(true);
+        commendBackground.setOpaque(true);
+        commendBackground.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
+
+        JLabel selectionBackground = new JLabel();
+        selectionBackground.setBackground(new Color(0x1A1A1A));
+        selectionBackground.setVisible(true);
+        selectionBackground.setOpaque(true);
+        selectionBackground.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
 
         JLabel banHistoryTitle = new JLabel("Banliste (" + externalUser.getInvalidBanSize() + " | " + externalUser.getValidBanSize() + " | " + externalUser.getBans().size() + ")");
         banHistoryTitle.setForeground(Color.WHITE);
@@ -75,10 +92,8 @@ public class StaffDash_BanUser extends JPanel {
         banHistoryTitle.setVerticalAlignment(SwingConstants.CENTER);
         banHistoryTitle.setFont(new Font("Arial", Font.PLAIN, 20));
 
-        banHistoryTitle.setBounds(605, 150, 400, 25);
 
         JLabel noBansFound = new JLabel("-- Kein Eintrag vorhanden --");
-        noBansFound.setBounds(banHistoryBackground.getBounds());
         noBansFound.setForeground(Color.WHITE);
         noBansFound.setHorizontalAlignment(SwingConstants.CENTER);
         noBansFound.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -119,14 +134,13 @@ public class StaffDash_BanUser extends JPanel {
 
         JScrollPane scrollPaneBans = new JScrollPane(editorPaneBans);
         scrollPaneBans.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-        scrollPaneBans.setBorder(null);
         scrollPaneBans.getVerticalScrollBar().setUI(new CustomScrollBar());
         scrollPaneBans.getHorizontalScrollBar().setUI(new CustomScrollBar());
         scrollPaneBans.getViewport().setBackground(Color.BLUE);
+        scrollPaneBans.setBorder(null);
         scrollPaneBans.getViewport().setOpaque(true);
 
         add(scrollPaneBans);
-        scrollPaneBans.setBounds(banHistoryBackground.getBounds());
         editorPaneBans.setCaretPosition(0);
 
         JTextField customReason = new JTextField();
@@ -134,9 +148,9 @@ public class StaffDash_BanUser extends JPanel {
         customReason.setVisible(false);
         customReason.setBackground(new Color(0x262626));
         customReason.setForeground(Color.WHITE);
+        customReason.setBorder(null);
         customReason.setHorizontalAlignment(JLabel.CENTER);
-        customReason.setFont(new Font("Arial", Font.BOLD, 16));
-        customReason.setBounds(170, 390, 265, 50);
+        customReason.setFont(new Font("Arial", Font.BOLD, 18));
 
         String[] reasons;
 
@@ -157,10 +171,10 @@ public class StaffDash_BanUser extends JPanel {
         JComboBox selectReason = new JComboBox(reasons);
         selectReason.setBackground(new Color(0x262626));
         selectReason.setFont(new Font("Arial", Font.BOLD, 16));
-        selectReason.setBounds(106, 450, 400, 35);
         selectReason.setUI(new CustomComboBox());
         selectReason.setRenderer(new ComboBoxRenderer());
         selectReason.setFocusable(false);
+        selectReason.setBorder(null);
         selectReason.setOpaque(false);
         selectReason.setForeground(Color.WHITE);
 
@@ -169,9 +183,9 @@ public class StaffDash_BanUser extends JPanel {
         JComboBox selectBanLength = new JComboBox(lengthArray);
         selectBanLength.setBackground(new Color(0x262626));
         selectBanLength.setFont(new Font("Arial", Font.BOLD, 16));
-        selectBanLength.setBounds(286, 500, 125, 35);
         selectBanLength.setUI(new CustomComboBox());
         selectBanLength.setRenderer(new ComboBoxRenderer());
+        selectBanLength.setBorder(null);
         selectBanLength.setFocusable(false);
         selectBanLength.setOpaque(false);
         selectBanLength.setForeground(Color.WHITE);
@@ -180,21 +194,20 @@ public class StaffDash_BanUser extends JPanel {
         JTextField lengthNumber = new JTextField();
         lengthNumber.setBackground(new Color(0x262626));
         lengthNumber.setForeground(Color.WHITE);
+        lengthNumber.setBorder(null);
         lengthNumber.setHorizontalAlignment(JLabel.CENTER);
         lengthNumber.setFont(new Font("Arial", Font.BOLD, 16));
-        lengthNumber.setBounds(180, 500, 100, 35);
 
         add(lengthNumber);
 
         JLabel commentBackground = new JLabel();
-        commentBackground.setBounds(50, 175, 500, 115);
         commentBackground.setBackground(new Color(0x262626));
         commentBackground.setOpaque(true);
+        commentBackground.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
         commentBackground.setVisible(true);
 
         JLabel modCommentCreator = new JLabel("Von: " + externalUser.getModCommentCreator());
 
-        modCommentCreator.setBounds(55, 180, 500, 20);
         modCommentCreator.setForeground(Color.WHITE);
         modCommentCreator.setHorizontalAlignment(SwingConstants.LEFT);
         modCommentCreator.setHorizontalTextPosition(SwingConstants.LEADING);
@@ -202,9 +215,8 @@ public class StaffDash_BanUser extends JPanel {
         modCommentCreator.setVerticalAlignment(SwingConstants.CENTER);
         modCommentCreator.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        JLabel modComment = new JLabel("Moderations-Kommentar: " + externalUser.getModComment());
+        JLabel modComment = new JLabel("Kommentar: " + externalUser.getModComment());
 
-        modComment.setBounds(55, 200, 500, 20);
         modComment.setForeground(Color.WHITE);
         modComment.setHorizontalAlignment(SwingConstants.LEFT);
         modComment.setHorizontalTextPosition(SwingConstants.LEADING);
@@ -213,7 +225,6 @@ public class StaffDash_BanUser extends JPanel {
 
         JLabel noCommentFound = new JLabel("-- Kein Moderationskommentar vorhanden --");
 
-        noCommentFound.setBounds(commentBackground.getBounds());
         noCommentFound.setForeground(Color.WHITE);
         noCommentFound.setHorizontalAlignment(SwingConstants.CENTER);
         noCommentFound.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -221,7 +232,7 @@ public class StaffDash_BanUser extends JPanel {
         noCommentFound.setVisible(false);
         noCommentFound.setFont(new Font("Arial", Font.PLAIN, 20));
 
-        if (externalUser.getModComment().equalsIgnoreCase("")) {
+        if (externalUser.getModComment().isBlank()) {
             modComment.setVisible(false);
             modCommentCreator.setVisible(false);
             noCommentFound.setVisible(true);
@@ -230,7 +241,18 @@ public class StaffDash_BanUser extends JPanel {
         selectReason.addActionListener(e -> {
             String selectedOption = (String) selectReason.getSelectedItem();
             assert selectedOption != null;
-            customReason.setVisible(selectedOption.equalsIgnoreCase("Eigener Grund"));
+            boolean customR = selectedOption.equalsIgnoreCase("Eigener Grund");
+            customReason.setVisible(customR);
+
+            if (customR) {
+                selectionBackground.setBounds(86, 430, 440, 170);
+                selectBanLength.setBounds(286, 550, 125, 35);
+                lengthNumber.setBounds(180, 550, 100, 35);
+            } else {
+                selectionBackground.setBounds(86, 430, 440, 120);
+                selectBanLength.setBounds(286, 500, 125, 35);
+                lengthNumber.setBounds(180, 500, 100, 35);
+            }
         });
 
         selectBanLength.addActionListener(e -> {
@@ -264,14 +286,14 @@ public class StaffDash_BanUser extends JPanel {
         backButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                backButton.setText("<html><u>\uD83D\uDEAA</u></html>");
+                backButton.setBackground(new Color(0x236C9F));
                 backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 backButton.setToolTipText("Zurück");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                backButton.setText("<html>\uD83D\uDEAA</html>");
+                backButton.setBackground(new Color(0x1E5E8B));
                 backButton.setCursor(Cursor.getDefaultCursor());
                 backButton.setToolTipText(null);
             }
@@ -305,13 +327,13 @@ public class StaffDash_BanUser extends JPanel {
         banButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                banButton.setText("<html><u>Sperren</u></html>");
+                banButton.setBackground(new Color(0xE04F4F));
                 banButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                banButton.setText("Sperren");
+                banButton.setBackground(new Color(0xAD4848));
                 banButton.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -391,13 +413,35 @@ public class StaffDash_BanUser extends JPanel {
         banButton.setVerticalAlignment(SwingConstants.CENTER);
         banButton.setFont(new Font("Arial", Font.PLAIN, 28));
 
-        backButton.setBounds(925, 750, 75, 50);
+        backButton.setBounds(925, 750, 90, 50);
         banButton.setBounds(20, 750, 885, 50);
+        commentBackground.setBounds(40, 175, 500, 115);
+        modCommentCreator.setBounds(55, 180, 500, 20);
+        modComment.setBounds(55, 200, 500, 20);
+        selectReason.setBounds(106, 450, 400, 35);
+        selectBanLength.setBounds(286, 500, 125, 35);
+        lengthNumber.setBounds(180, 500, 100, 35);
+        banHistoryBackground.setBounds(605, 200, 400, 505);
+        banHistoryTitle.setBounds(605, 175, 400, 25);
+        customReason.setBounds(106, 500, 400, 35);
+
+        selectionBackground.setBounds(86, 430, 440, 120);
+        banHistoryBackground2.setBounds(580, 155, 450, 575);
+        commendBackground.setBounds(20, 155, 540, 155);
+
+        noBansFound.setBounds(banHistoryBackground.getBounds());
+        scrollPaneBans.setBounds(banHistoryBackground.getBounds());
+        noCommentFound.setBounds(commentBackground.getBounds());
+
         add(banButton);
         add(backButton);
 
         add(selectReason);
         add(banHistoryTitle);
         add(banHistoryBackground);
+
+        add(banHistoryBackground2);
+        add(selectionBackground);
+        add(commendBackground);
     }
 }

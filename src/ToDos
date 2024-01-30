@@ -1,22 +1,10 @@
 # Allgemein #
 - Registrieren
-- Feedback System
 - Umfragesystem
 - Benachrichtigungen (Windows-Popup) mit Einstellung
 - Benachrichtigungssystem (z.b. bei Verwarnungen)
 - Private Nachrichten
-- Lightmode hinzufügen (In Einstellungen änderbar)
-
-# Admin Dashboard #
-- Usersettings mit z.b. Rang-, Name-, Passwort-, ChannelID-, Token-Einstellungen
-- Useraccount deaktivieren (Beim Anmelden steht es so, als würde der Account nicht existieren)
-
-# Staff Dashboard #
-- User sperren/warnen
 
 # Support #
 - Ticketsystem
 
-# Changelog #
-- Admins können es bearbeiten
-- Sync mitm Server

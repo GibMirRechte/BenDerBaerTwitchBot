@@ -50,6 +50,7 @@ public class AutoMessages extends JPanel {
         title.setFont(new Font("Arial", Font.PLAIN, 36));
         add(title);
 
+
         JLabel saveButton = new JLabel("Speichern");
         JLabel messageTitle = new JLabel("Nachrichten");
         JLabel messageUndertitle = new JLabel("Pro Zeile eine gewünschte Nachricht.");
@@ -145,4 +146,5 @@ public class AutoMessages extends JPanel {
         add(messageArea);
         add(saveFeedback);
     }
+
 }

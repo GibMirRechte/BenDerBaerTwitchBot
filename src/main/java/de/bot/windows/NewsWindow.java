@@ -75,7 +75,6 @@ public class NewsWindow extends JPanel {
         background.setOpaque(true);
         background.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
 
-
         String labelText = news.getText();
 
         JTextArea changelog = new JTextArea(labelText);
@@ -208,6 +207,7 @@ public class NewsWindow extends JPanel {
                                 printStream.println("EDIT");
                                 printStream.println(news.getNewsKey());
                                 printStream.println(title.getText());
+
                                 printStream.println(text.replace("\n", "&&&-"));
                                 socket.close();
                                 news.setTitle(title.getText());

@@ -11,8 +11,9 @@ public class News {
     private final String lastEditor;
     private final AccountRank lastEditorAccountType;
     private final long lastEdited;
+    private boolean isPublic;
 
-    public News(String newsKey, String title, String text, long created, String creator, AccountRank creatorAccountRank, String lastEditor, AccountRank lastEditorAccountType, long lastEdited) {
+    public News(String newsKey, String title, String text, long created, String creator, AccountRank creatorAccountRank, String lastEditor, AccountRank lastEditorAccountType, long lastEdited, boolean isPublic) {
         this.newsKey = newsKey;
         this.title = title;
         this.text = text;
@@ -22,6 +23,11 @@ public class News {
         this.lastEditor = lastEditor;
         this.lastEditorAccountType = lastEditorAccountType;
         this.lastEdited = lastEdited;
+        this.isPublic = isPublic;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
     }
 
     public AccountRank getCreatorAccountRank() {
@@ -34,7 +40,12 @@ public class News {
     }
 
     public String getText() {
-        return text.replace("&&&-", "\n");
+        String output = this.text.replaceAll("<Ae", "Ä").replaceAll("<ae", "ä")
+                .replaceAll("<Ue", "Ü").replaceAll("<ue", "ü")
+                .replaceAll("<Oe", "Ö").replaceAll("<oe", "ö")
+                .replaceAll("<ss", "ß");
+
+        return output.replace("&&&-", "\n");
     }
 
     public String getTitle() {
@@ -43,6 +54,14 @@ public class News {
 
     public long getCreated() {
         return created;
+    }
+
+    public String getNewsTeaser() {
+        if (this.getText().length() <= 100) {
+            return this.getText().substring(0, this.getText().length() / 2) + "...";
+        } else {
+            return this.getText().substring(0, 100) + "...";
+        }
     }
 
     public AccountRank getLastEditorAccountType() {

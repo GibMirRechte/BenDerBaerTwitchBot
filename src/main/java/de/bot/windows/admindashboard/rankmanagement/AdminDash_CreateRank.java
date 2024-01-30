@@ -131,13 +131,6 @@ public class AdminDash_CreateRank extends JPanel {
         rankColor.setVerticalAlignment(SwingConstants.CENTER);
         rankColor.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        AccountHandler.AccountType[] accountTypes = AccountHandler.AccountType.values();
-        String[] ranks = new String[AccountHandler.AccountType.values().length];
-
-        for (int i = 0; i < accountTypes.length; i++) {
-            ranks[i] = accountTypes[i].badgeName;
-        }
-
         background.setBackground(new Color(0x1A1A1A));
         background.setVisible(true);
         background.setOpaque(false);

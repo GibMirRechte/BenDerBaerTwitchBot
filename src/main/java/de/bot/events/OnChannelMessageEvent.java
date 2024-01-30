@@ -13,12 +13,12 @@ public class OnChannelMessageEvent {
 
     @EventSubscriber
     public void printChannelMessage(ChannelMessageEvent event) {
-        if (!updateHandler.getToolData().isMaintenance_autoshout()) {
+        if (!updateHandler.getToolData().isMaintenance_autoshout() && accountHandler.getAccount() != null) {
             Account account = accountHandler.getAccount();
             if (!account.getAutoshout_Cache().contains(event.getUser().getName())) {
                 if (account.getAutoShoutSettings().getUserList().contains(event.getUser().getName())) {
                     account.getTwitchClient().getHelix().sendShoutout(account.getAccessToken(), account.getChannelID(), event.getUser().getId(), account.getChannelID());
-                    event.getTwitchChat().sendMessage(event.getChannel().getName(), "");
+                    event.getTwitchChat().sendMessage(event.getChannel().getName(), account.getAutoShoutSettings().getShoutoutMessage().replace("{@user}", event.getUser().getName()));
                     account.getAutoshout_Cache().add(event.getUser().getName());
                 }
             }

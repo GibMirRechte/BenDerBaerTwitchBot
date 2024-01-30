@@ -41,8 +41,9 @@ public class NewsHandler {
             String lastEditor = bufferedReader.readLine();
             AccountRank lastEditorAccountType = accountHandler.getRank(bufferedReader.readLine());
             long lastEdited = Long.parseLong(bufferedReader.readLine());
+            boolean isPublic = Boolean.parseBoolean(bufferedReader.readLine());
 
-            News news = new News(newsKey, title, text, created, creator, creatorAccountRank, lastEditor, lastEditorAccountType, lastEdited);
+            News news = new News(newsKey, title, text, created, creator, creatorAccountRank, lastEditor, lastEditorAccountType, lastEdited, isPublic);
             newsList.put(newsKey, news);
             return news;
 

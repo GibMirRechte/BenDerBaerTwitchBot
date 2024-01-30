@@ -62,10 +62,9 @@ public class Sidebar extends JPanel {
 
         JLabel dashboard = new JLabel("Dashboard");
         JLabel feedback = new JLabel("Feedback");
-        JLabel privateMessages = new JLabel("Nachrichten");
+        JLabel latestNews = new JLabel("Nachrichten");
         JLabel settings = new JLabel("Einstellungen");
         JLabel support = new JLabel("Support");
-        JLabel livechat = new JLabel("Livechat");
         JLabel changes = new JLabel("Changes");
         JLabel discord = new JLabel("Discord");
         JLabel streams = new JLabel("Streams");
@@ -78,10 +77,6 @@ public class Sidebar extends JPanel {
         changes.setHorizontalAlignment(SwingConstants.CENTER);
         changes.setVerticalAlignment(SwingConstants.CENTER);
         changes.setFont(new Font("Arial", Font.PLAIN, 13));
-        if (windowType.equals(WindowHandler.WindowType.CHANGELOG)) {
-            changes.setBackground(new Color(0x333333));
-            changes.setOpaque(true);
-        }
 
         streams.setForeground(Color.WHITE);
         streams.setHorizontalAlignment(SwingConstants.CENTER);
@@ -103,19 +98,6 @@ public class Sidebar extends JPanel {
         discord.setFont(new Font("Arial", Font.PLAIN, 13));
 
         Border emptyBorder = BorderFactory.createEmptyBorder(0, 20, 0, 0);
-
-        livechat.setForeground(Color.WHITE);
-        livechat.setIcon(soonLabel);
-        livechat.setBorder(emptyBorder);
-        livechat.setHorizontalAlignment(SwingConstants.LEFT);
-        livechat.setVerticalAlignment(SwingConstants.CENTER);
-        livechat.setVerticalTextPosition(SwingConstants.TOP);
-        livechat.setHorizontalTextPosition(SwingConstants.LEADING);
-        livechat.setFont(new Font("Arial", Font.PLAIN, 16));
-        if (windowType.equals(WindowHandler.WindowType.LIVECHAT)) {
-            livechat.setBackground(new Color(0x333333));
-            livechat.setOpaque(true);
-        }
 
         settings.setForeground(Color.WHITE);
         settings.setBorder(emptyBorder);
@@ -146,14 +128,17 @@ public class Sidebar extends JPanel {
         support.setHorizontalTextPosition(SwingConstants.LEADING);
         support.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        privateMessages.setForeground(Color.WHITE);
-        privateMessages.setIcon(soonLabel);
-        privateMessages.setBorder(emptyBorder);
-        privateMessages.setHorizontalAlignment(SwingConstants.LEFT);
-        privateMessages.setVerticalAlignment(SwingConstants.CENTER);
-        privateMessages.setVerticalTextPosition(SwingConstants.TOP);
-        privateMessages.setHorizontalTextPosition(SwingConstants.LEADING);
-        privateMessages.setFont(new Font("Arial", Font.PLAIN, 16));
+        latestNews.setForeground(Color.WHITE);
+        latestNews.setBorder(emptyBorder);
+        latestNews.setHorizontalAlignment(SwingConstants.LEFT);
+        latestNews.setVerticalAlignment(SwingConstants.CENTER);
+        latestNews.setVerticalTextPosition(SwingConstants.TOP);
+        latestNews.setHorizontalTextPosition(SwingConstants.LEADING);
+        latestNews.setFont(new Font("Arial", Font.PLAIN, 16));
+        if (windowType.equals(WindowHandler.WindowType.NEWEST_NEWS)) {
+            latestNews.setBackground(new Color(0x333333));
+            latestNews.setOpaque(true);
+        }
 
         automessages.setForeground(Color.WHITE);
         automessages.setIcon(soonLabel);
@@ -178,6 +163,9 @@ public class Sidebar extends JPanel {
                 windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATENEWS) ||
                 windowType.equals(WindowHandler.WindowType.ADMINDASH_NEWSMANAGEMENT) ||
                 windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATEUSER) ||
+                windowType.equals(WindowHandler.WindowType.ADMINDASH_EDITNEWS_SEARCH) ||
+                windowType.equals(WindowHandler.WindowType.ADMINDASH_EDITUSER) ||
+                windowType.equals(WindowHandler.WindowType.ADMINDASH_EDITUSER_SEARCH) ||
                 windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATERANK)) {
             adminDB.setBackground(new Color(0x333333));
             adminDB.setOpaque(true);
@@ -204,6 +192,10 @@ public class Sidebar extends JPanel {
         commands.setBorder(emptyBorder);
         commands.setHorizontalTextPosition(SwingConstants.LEADING);
         commands.setFont(new Font("Arial", Font.PLAIN, 16));
+        if (windowType.equals(WindowHandler.WindowType.CUSTOMCOMMANDS)) {
+            commands.setBackground(new Color(0x333333));
+            commands.setOpaque(true);
+        }
 
         dashboard.setForeground(Color.WHITE);
         dashboard.setHorizontalAlignment(SwingConstants.LEFT);
@@ -239,24 +231,6 @@ public class Sidebar extends JPanel {
             autoShout.setBackground(new Color(0x333333));
             autoShout.setOpaque(true);
         }
-
-        livechat.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-                livechat.setBackground(new Color(0x333333));
-                livechat.setOpaque(true);
-                livechat.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-                if (!windowType.equals(WindowHandler.WindowType.LIVECHAT)) {
-                    livechat.setBackground(null);
-                    livechat.setOpaque(false);
-                }
-                livechat.setCursor(Cursor.getDefaultCursor());
-            }
-        });
 
         feedback.addMouseListener(new MouseAdapter() {
             @Override
@@ -367,7 +341,10 @@ public class Sidebar extends JPanel {
                         !windowType.equals(WindowHandler.WindowType.ADMINDASH_USERMANAGEMENT) &&
                         !windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATENEWS) &&
                         !windowType.equals(WindowHandler.WindowType.ADMINDASH_NEWSMANAGEMENT) &&
-                        !windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATEUSER)) {
+                        !windowType.equals(WindowHandler.WindowType.ADMINDASH_EDITUSER) &&
+                        !windowType.equals(WindowHandler.WindowType.ADMINDASH_CREATEUSER) &&
+                        !windowType.equals(WindowHandler.WindowType.ADMINDASH_EDITNEWS_SEARCH) &&
+                        !windowType.equals(WindowHandler.WindowType.ADMINDASH_EDITUSER_SEARCH)) {
                     adminDB.setBackground(null);
                     adminDB.setOpaque(false);
                 }
@@ -380,25 +357,26 @@ public class Sidebar extends JPanel {
             }
         });
 
-        privateMessages.addMouseListener(new MouseAdapter() {
+        latestNews.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                privateMessages.setBackground(new Color(0x333333));
-                privateMessages.setOpaque(true);
-                privateMessages.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                latestNews.setBackground(new Color(0x333333));
+                latestNews.setOpaque(true);
+                latestNews.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (!windowType.equals(WindowHandler.WindowType.PRIVATE_MESSAGES)) {
-                    privateMessages.setBackground(null);
-                    privateMessages.setOpaque(false);
+                if (!windowType.equals(WindowHandler.WindowType.NEWEST_NEWS)) {
+                    latestNews.setBackground(null);
+                    latestNews.setOpaque(false);
                 }
-                privateMessages.setCursor(Cursor.getDefaultCursor());
+                latestNews.setCursor(Cursor.getDefaultCursor());
             }
 
             @Override
-            public void mousePressed(MouseEvent e) {
+            public void mouseReleased(MouseEvent e) {
+                windowHandler.openWindow(WindowHandler.WindowType.NEWEST_NEWS);
             }
         });
 
@@ -412,7 +390,7 @@ public class Sidebar extends JPanel {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (!windowType.equals(WindowHandler.WindowType.COMMANDS)) {
+                if (!windowType.equals(WindowHandler.WindowType.CUSTOMCOMMANDS)) {
                     commands.setBackground(null);
                     commands.setOpaque(false);
                 }
@@ -421,6 +399,7 @@ public class Sidebar extends JPanel {
 
             @Override
             public void mousePressed(MouseEvent e) {
+                windowHandler.openWindow(WindowHandler.WindowType.CUSTOMCOMMANDS);
             }
         });
 
@@ -599,10 +578,8 @@ public class Sidebar extends JPanel {
 
             @Override
             public void mouseExited(MouseEvent e) {
-                if (!windowType.equals(WindowHandler.WindowType.CHANGELOG)) {
-                    changes.setBackground(null);
-                    changes.setOpaque(false);
-                }
+                changes.setBackground(null);
+                changes.setOpaque(false);
                 changes.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -614,16 +591,16 @@ public class Sidebar extends JPanel {
 
         if (account.getAccountRank().isAdmin_team()) {
             add(breakLineThree);
-            breakLineThree.setBounds(35, 490, 180, 20);
+            breakLineThree.setBounds(35, 419, 180, 20);
             add(adminDB);
-            adminDB.setBounds(35, 506, 180, 35);
+            adminDB.setBounds(35, 435, 180, 35);
             add(staffDB);
-            staffDB.setBounds(35, 542, 180, 35);
+            staffDB.setBounds(35, 471, 180, 35);
         } else if (account.getAccountRank().isTeam()) {
             add(breakLineThree);
-            breakLineThree.setBounds(35, 490, 180, 20);
+            breakLineThree.setBounds(35, 419, 180, 20);
             add(staffDB);
-            staffDB.setBounds(35, 506, 180, 35);
+            staffDB.setBounds(35, 435, 180, 35);
         }
 
         add(breakLineOne);
@@ -638,11 +615,9 @@ public class Sidebar extends JPanel {
         add(dashboard);
         add(settings);
         add(streams);
-        add(support);
         add(automessages);
         add(commands);
-        add(privateMessages);
-        add(livechat);
+        add(latestNews);
 
         sidebarHeader.setBounds(0, 0, 255, 75);
         dashboard.setBounds(32, 100, 192, 35);
@@ -653,10 +628,8 @@ public class Sidebar extends JPanel {
         commands.setBounds(32, 259, 192, 35);
         breakLineTwo.setBounds(32, 295, 192, 20);
         feedback.setBounds(32, 311, 192, 35);
-        privateMessages.setBounds(32, 347, 192, 35);
+        latestNews.setBounds(32, 347, 192, 35);
         settings.setBounds(32, 383, 192, 35);
-        support.setBounds(32, 419, 192, 35);
-        livechat.setBounds(32, 455, 192, 35);
         changes.setBounds(66, 776, 61, 30);
         streams.setBounds(127, 776, 61, 30);
         logout.setBounds(188, 776, 61, 30);

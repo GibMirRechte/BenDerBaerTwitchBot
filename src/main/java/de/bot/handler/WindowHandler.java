@@ -8,11 +8,9 @@ import de.bot.windows.*;
 import de.bot.windows.admindashboard.AdminDash_NewsManagement;
 import de.bot.windows.admindashboard.AdminDash_Start;
 import de.bot.windows.admindashboard.news.AdminDash_CreateNews;
+import de.bot.windows.admindashboard.news.AdminDash_EditNews_Search;
 import de.bot.windows.admindashboard.rankmanagement.AdminDash_CreateRank;
-import de.bot.windows.admindashboard.usermanagement.AdminDash_CreateUser;
-import de.bot.windows.admindashboard.usermanagement.AdminDash_EditUser;
-import de.bot.windows.admindashboard.usermanagement.AdminDash_EditUser_Search;
-import de.bot.windows.admindashboard.usermanagement.AdminDash_UserManagement;
+import de.bot.windows.admindashboard.usermanagement.*;
 import de.bot.windows.modules.Sidebar;
 import de.bot.windows.staffdashboard.StaffDash_BanUser;
 import de.bot.windows.staffdashboard.StaffDash_Start;
@@ -35,21 +33,18 @@ public class WindowHandler {
 
 
     public enum WindowType {
-        DASHBOARD(false), AUTOMESSAGES(false), LOGIN(false), AUTOVIP(true), UPDATE(false), CHANGELOG(false),
+        DASHBOARD(false), AUTOMESSAGES(false), LOGIN(false), AUTOVIP(true), UPDATE(false),
         NOT_ALLOWED(false), AUTOSHOUT(false), STREAMS(false), SETTINGS(false), ADMINDASHBOARD(false), STAFFDASHBOARD(false),
-        FEEDBACK(false), UserInfo(false), BanUser(false), WarnUser(false), SUPPORT(false), COMMANDS(false),
+        FEEDBACK(false), UserInfo(false), BanUser(false), WarnUser(false), SUPPORT(false),
         PRIVATE_MESSAGES(false), ADMINDASH_USERMANAGEMENT(false), ADMINDASH_NEWSMANAGEMENT(false), ADMINDASH_CREATENEWS(false), ADMINDASH_CREATERANK(false),
-        ADMINDASH_CREATEUSER(false), NEWS(false), ADMINDASH_EDITUSER(false), ADMINDASH_EDITUSER_SEARCH(false), LIVECHAT(false);
+        ADMINDASH_CREATEUSER(false), NEWS(false), ADMINDASH_EDITUSER(false), ADMINDASH_EDITUSER_SEARCH(false),
+        ADMINDASH_EDITNEWS_SEARCH(false), NEWEST_NEWS(false), CUSTOMCOMMANDS(false), REGISTER(false), ADMINDASH_REGISTERSETTINGS(false);
 
         public boolean onlyVIP;
 
         WindowType(boolean onlyVIP) {
             this.onlyVIP = onlyVIP;
         }
-    }
-
-    public enum StaffDBTypes {
-        UserInfo, BanUser, WarnUser;
     }
 
     public static WindowHandler getInstance() {
@@ -111,7 +106,7 @@ public class WindowHandler {
         if (updateHandler.hasNewUpdate())
             windowType = WindowType.UPDATE;
 
-        if (accountHandler.getAccount() == null && windowType != WindowType.UPDATE) {
+        if (accountHandler.getAccount() == null && windowType != WindowType.UPDATE && windowType != WindowType.REGISTER) {
             windowType = WindowType.LOGIN;
         } else {
             if (accountHandler.getAccount() != null) {
@@ -148,11 +143,6 @@ public class WindowHandler {
                 frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Update verfügbar");
                 frame.getContentPane().add(new UpdateAvailable()).setBackground(new Color(0x0A0A0C));
             }
-            case CHANGELOG -> {
-                frame.getContentPane().add(sidebar, BorderLayout.WEST);
-                frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Changelog");
-                frame.getContentPane().add(new Changelog()).setBackground(new Color(0x0A0A0C));
-            }
             case NOT_ALLOWED -> {
                 frame.getContentPane().add(sidebar, BorderLayout.WEST);
                 frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Verboten");
@@ -161,7 +151,7 @@ public class WindowHandler {
             case STREAMS -> {
                 frame.getContentPane().add(sidebar, BorderLayout.WEST);
                 frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Featured Streams");
-                frame.getContentPane().add(new Maintenance("Streams")).setBackground(new Color(0x0A0A0C));
+                frame.getContentPane().add(new Streams()).setBackground(new Color(0x0A0A0C));
             }
             case AUTOSHOUT -> {
                 frame.getContentPane().add(sidebar, BorderLayout.WEST);
@@ -273,6 +263,34 @@ public class WindowHandler {
                     frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Benutzer suchen");
                     frame.getContentPane().add(new AdminDash_EditUser_Search()).setBackground(new Color(0x0A0A0C));
                 }
+            }
+            case ADMINDASH_EDITNEWS_SEARCH -> {
+                if (!accountHandler.getAccount().getAccountRank().isAdmin_team()) {
+                    openWindow(WindowType.DASHBOARD);
+                } else {
+                    frame.getContentPane().add(sidebar, BorderLayout.WEST);
+                    frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - News suchen");
+                    frame.getContentPane().add(new AdminDash_EditNews_Search()).setBackground(new Color(0x0A0A0C));
+                }
+            }
+            case NEWEST_NEWS -> {
+                frame.getContentPane().add(sidebar, BorderLayout.WEST);
+                frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Aktuelle Nachrichten");
+                frame.getContentPane().add(new LatestNews()).setBackground(new Color(0x0A0A0C));
+            }
+            case CUSTOMCOMMANDS -> {
+                frame.getContentPane().add(sidebar, BorderLayout.WEST);
+                frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Aktuelle Nachrichten");
+                frame.getContentPane().add(new Maintenance("Custom Commands")).setBackground(new Color(0x0A0A0C));
+            }
+            case REGISTER -> {
+                frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Registrieren");
+                frame.getContentPane().add(new Register()).setBackground(new Color(0x0A0A0C));
+            }
+            case ADMINDASH_REGISTERSETTINGS -> {
+                frame.getContentPane().add(sidebar, BorderLayout.WEST);
+                frame.setTitle("TwitchBot " + updateHandler.getCurrentVersion() + " - Registriereinstellungen");
+                frame.getContentPane().add(new AdminDash_RegisterSettings()).setBackground(new Color(0x0A0A0C));
             }
             default -> {
                 System.err.println("Folgender Window-Type ist nicht definiert: " + windowType + "!");

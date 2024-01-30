@@ -15,19 +15,20 @@ import java.util.HashMap;
 
 public class UpdateHandler {
 
-    private final String currentVersion = "0.3";
+    private final String currentVersion = "0.4";
     private boolean newUpdateAvailable = false;
     static UpdateHandler instance;
     private String newestVersion = "";
     String newUpdateDownloadLink = "";
-    Announcement announcement;
-    private static ToolData toolData = new ToolData(true, true, "");
+    static Announcement announcement;
+    private static ToolData toolData = new ToolData(false, true, true);
 
     AccountHandler accountHandler = AccountHandler.getInstance();
 
     public ToolData getToolData() {
         return toolData;
     }
+
 
     public static UpdateHandler getInstance() {
         if (instance == null) {
@@ -69,7 +70,10 @@ public class UpdateHandler {
         return currentVersion;
     }
 
+    boolean isUpdating = false;
+
     public void checkForUpdate() {
+        if (!isUpdating) startUpdateChecker();
         try (Socket socket = new Socket("45.93.249.139", 3459)) {
             OutputStream outputStream = socket.getOutputStream();
             PrintStream printStream = new PrintStream(outputStream);
@@ -83,10 +87,8 @@ public class UpdateHandler {
 
             boolean maintenance_autoshout = Boolean.parseBoolean(bufferedReader.readLine());
             boolean maintenance_autovip = Boolean.parseBoolean(bufferedReader.readLine());
-            String changelog = bufferedReader.readLine();
 
             getToolData().updateMaintenance(maintenance_autoshout, maintenance_autovip);
-            getToolData().setChangelog(changelog);
 
             int ranks = Integer.parseInt(bufferedReader.readLine());
             HashMap<String, AccountRank> accountRanks = new HashMap<>();
@@ -102,6 +104,16 @@ public class UpdateHandler {
             }
 
             accountHandler.setAccountRanks(accountRanks);
+
+            String text = bufferedReader.readLine();
+            int typeID = Integer.parseInt(bufferedReader.readLine());
+            String color = bufferedReader.readLine();
+            boolean canUseTool = Boolean.parseBoolean(bufferedReader.readLine());
+            boolean isActive = Boolean.parseBoolean(bufferedReader.readLine());
+            announcement = new Announcement(text, typeID, color, canUseTool, isActive);
+
+            boolean registerEnabled = Boolean.parseBoolean(bufferedReader.readLine());
+            getToolData().setRegisterEnabled(registerEnabled);
 
             if (!currentVersion.equalsIgnoreCase(newestVersion)) {
                 newUpdateAvailable = true;
@@ -121,19 +133,21 @@ public class UpdateHandler {
     }
 
     public void startUpdateChecker() {
+        isUpdating = true;
         new Thread(() -> {
-            while (true) {
                 try {
+                    while (true) {
                     Thread.sleep(60000);
                     checkForUpdate();
+                        getAnnouncement();
 
                     if (hasNewUpdate()) {
                         downloadNewestVersion();
                     }
 
+                    }
                 } catch (Exception ignored) {
                 }
-            }
         }).start();
     }
 

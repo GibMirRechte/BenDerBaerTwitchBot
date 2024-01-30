@@ -20,12 +20,13 @@ public class Account {
     private final List<String> autoshout_Cache = new ArrayList<>();
     private final AutoMessagesSettings autoMessagesSettings;
     private long lastFeedback = 0;
+    private CustomCommandSettings customCommandSettings;
 
 
     //TwitchClient benderbaer = TwitchClientBuilder.builder().withEnableHelix(Boolean.TRUE).withClientId("gp762nuuoqcoxypju8c569th9wz7q5").withChatAccount(new OAuth2Credential("twitch", accessToken)).withEnableChat(Boolean.TRUE).build();
 
 
-    public Account(String name, String password, String channelID, String accessToken, String refreshToken, AccountRank accountRank, AutoVIPSettings autoVIPSettings, AutoShoutSettings autoShoutSettings, AutoMessagesSettings autoMessagesSettings, BanData banData) {
+    public Account(String name, String password, String channelID, String accessToken, String refreshToken, AccountRank accountRank, AutoVIPSettings autoVIPSettings, AutoShoutSettings autoShoutSettings, AutoMessagesSettings autoMessagesSettings, CustomCommandSettings customCommandSettings, BanData banData) {
         this.name = name;
         this.password = password;
         this.channelID = channelID;
@@ -36,12 +37,21 @@ public class Account {
         this.autoVIPSettings = autoVIPSettings;
         this.autoMessagesSettings = autoMessagesSettings;
         this.autoShoutSettings = autoShoutSettings;
+        this.customCommandSettings = customCommandSettings;
 
         if (!banData.isActive()) {
             //this.twitchClient = TwitchClientBuilder.builder().withEnableHelix(Boolean.TRUE).withClientId("gp762nuuoqcoxypju8c569th9wz7q5").withChatAccount(new OAuth2Credential("twitch", this.accessToken)).withEnableChat(Boolean.TRUE).build();
             //this.twitchClient.getChat().joinChannel(this.name);
             //this.twitchClient.getEventManager().onEvent(ChannelMessageEvent.class, event -> new OnChannelMessageEvent().printChannelMessage(event));
         }
+    }
+
+    public long getLastFeedback() {
+        return lastFeedback;
+    }
+
+    public CustomCommandSettings getCustomCommandSettings() {
+        return customCommandSettings;
     }
 
     public AutoMessagesSettings getAutoMessagesSettings() {

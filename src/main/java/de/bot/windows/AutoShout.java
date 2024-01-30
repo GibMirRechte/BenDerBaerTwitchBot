@@ -38,7 +38,7 @@ public class AutoShout extends JPanel {
         JLabel userlistUndertitle = new JLabel("Welche User sollen automatische Shoutouts erhalten? (Mit Komma trennen)");
         JLabel messageTitle = new JLabel("Shoutout-Nachricht");
         JLabel messageUndertitle = new JLabel("Welche Nachricht als Shoutout gesendet wird. ({@user} ist Platzhalter für den Nutzernamen)");
-        JTextArea messageArea = new JTextArea("");
+        JTextArea messageArea = new JTextArea(account.getAutoShoutSettings().getShoutoutMessage());
         JTextArea userlistArea = new JTextArea("");
         JLabel background = new JLabel();
         JLabel notice = new JLabel("<html>Ein wichtiger Hinweis für AutoShout ist verfügbar.<br>Klicke zum ansehen</html>");
@@ -126,9 +126,13 @@ public class AutoShout extends JPanel {
 
         messageArea.setBackground(new Color(0x262626));
         messageArea.setBorder(emptyBorder);
-        messageArea.setForeground(Color.GRAY);
         messageArea.setFont(new Font("Arial", Font.PLAIN, 18));
-        messageArea.setText(defaultMessage);
+        messageArea.setText(account.getAutoShoutSettings().getShoutoutMessage());
+        if (account.getAutoShoutSettings().getShoutoutMessage().equalsIgnoreCase(defaultMessage)) {
+            messageArea.setForeground(Color.GRAY);
+        } else {
+            messageArea.setForeground(Color.WHITE);
+        }
 
         JScrollPane userlistScrollArea = new JScrollPane(userlistArea);
         userlistScrollArea.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -145,7 +149,6 @@ public class AutoShout extends JPanel {
         messageScrollArea.setBorder(null);
         messageScrollArea.getViewport().setBackground(Color.BLUE);
         messageScrollArea.getViewport().setOpaque(true);
-
 
         if (account.getAutoShoutSettings().getUserList().isEmpty()) {
             userlistArea.setText("ExampleUser1,ExampleUser2");
@@ -226,6 +229,7 @@ public class AutoShout extends JPanel {
             public void mouseReleased(MouseEvent e) {
                 saveFeedback.setVisible(true);
                 String userList = userlistArea.getText().replace(" ", "").replace("ExampleUser1,ExampleUser2", "");
+                String message = messageArea.getText().replace(defaultMessage, " ");
                 try {
                     Socket socket = new Socket("45.93.249.139", 3459);
                     OutputStream outputStream = socket.getOutputStream();
@@ -234,9 +238,11 @@ public class AutoShout extends JPanel {
                     printStream.println("AutoShout");
                     printStream.println(account.getName());
                     printStream.println(userList);
+                    printStream.println(message);
 
                     saveFeedback.setVisible(true);
                     account.getAutoShoutSettings().updateUserList(userList);
+                    account.getAutoShoutSettings().setShoutoutMessage(message);
                 } catch (Exception ignored) {
                 }
             }

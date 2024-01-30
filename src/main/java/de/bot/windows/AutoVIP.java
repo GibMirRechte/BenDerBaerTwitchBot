@@ -9,8 +9,6 @@ import de.bot.utils.Announcement;
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.OutputStream;
@@ -59,12 +57,6 @@ public class AutoVIP extends JPanel {
         JSlider months = new JSlider(1, 12);
         JSlider streamSlider = new JSlider(10, 60);
         JLabel saveFeedback = new JLabel("Die Einstellungen wurden erfolgreich gespeichert.");
-        JLabel whitelistTitle = new JLabel("Whitelist");
-        JLabel whitelistUndertitle = new JLabel("User erhalten VIP, unabhängig der Aktivität. (Mit Komma trennen)");
-        JTextArea whitelistArea = new JTextArea("");
-        JLabel blacklistTitle = new JLabel("Blacklist");
-        JLabel blacklistUndertitle = new JLabel("User erhalten niemals VIP. (Mit Komma trennen)");
-        JTextArea blacklistArea = new JTextArea("");
         JTextArea sliderBackground = new JTextArea("");
 
         Border emptyBorder = BorderFactory.createEmptyBorder(0, 10, 0, 10);
@@ -113,52 +105,13 @@ public class AutoVIP extends JPanel {
                     printStream.println(acc.getName());
                     printStream.println(months.getValue());
                     printStream.println(streamSlider.getValue());
-                    printStream.println(whitelistArea.getText().replace("ExampleUser1,ExampleUser2", ""));
-                    printStream.println(blacklistArea.getText().replace("ExampleUser1,ExampleUser2", ""));
 
                     saveFeedback.setVisible(true);
-                    acc.getAutoVIPSettings().updateAutoVIPSettings(months.getValue(), streamSlider.getValue(), whitelistArea.getText().replace("ExampleUser1,ExampleUser2", ""), blacklistArea.getText().replace("ExampleUser1,ExampleUser2", ""));
+                    acc.getAutoVIPSettings().updateAutoVIPSettings(months.getValue(), streamSlider.getValue());
                 } catch (Exception ignored) {
                 }
             }
         });
-
-        whitelistArea.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (whitelistArea.getText().equals("ExampleUser1,ExampleUser2")) {
-                    whitelistArea.setText("");
-                    whitelistArea.setForeground(Color.WHITE);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (whitelistArea.getText().isEmpty()) {
-                    whitelistArea.setText("ExampleUser1,ExampleUser2");
-                    whitelistArea.setForeground(Color.GRAY);
-                }
-            }
-        });
-
-        blacklistArea.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (blacklistArea.getText().equals("ExampleUser1,ExampleUser2")) {
-                    blacklistArea.setText("");
-                    blacklistArea.setForeground(Color.WHITE);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (blacklistArea.getText().isEmpty()) {
-                    blacklistArea.setText("ExampleUser1,ExampleUser2");
-                    blacklistArea.setForeground(Color.GRAY);
-                }
-            }
-        });
-
 
         streamSlider.setBackground(new Color(0x262626));
         streamSlider.setForeground(Color.WHITE);
@@ -211,66 +164,11 @@ public class AutoVIP extends JPanel {
         monthsUndertitle.setBounds(40, 195, 650, 14);
         months.setBounds(40, 220, 550, 55);
 
-        whitelistTitle.setBounds(40, 385, 400, 20);
-        whitelistUndertitle.setBounds(40, 405, 400, 14);
-        whitelistArea.setBounds(40, 430, 400, 200);
-
         streamsTitle.setBounds(40, 280, 650, 20);
         streamsUndertitle.setBounds(40, 300, 600, 14);
         streamSlider.setBounds(40, 325, 550, 55);
 
         sliderBackground.setBounds(20, 155, 640, 245);
-
-        whitelistTitle.setForeground(Color.WHITE);
-        whitelistTitle.setHorizontalAlignment(SwingConstants.LEFT);
-        whitelistTitle.setVerticalAlignment(SwingConstants.CENTER);
-        whitelistTitle.setFont(new Font("Arial", Font.PLAIN, 18));
-
-        whitelistUndertitle.setForeground(Color.GRAY);
-        whitelistUndertitle.setHorizontalAlignment(SwingConstants.LEFT);
-        whitelistUndertitle.setVerticalAlignment(SwingConstants.CENTER);
-        whitelistUndertitle.setFont(new Font("Arial", Font.ITALIC, 12));
-
-        whitelistArea.setWrapStyleWord(true);
-        whitelistArea.setLineWrap(true);
-
-        whitelistArea.setBackground(new Color(0x262626));
-        whitelistArea.setForeground(Color.WHITE);
-        whitelistArea.setFont(new Font("Arial", Font.PLAIN, 18));
-
-        if (acc.getAutoVIPSettings().getWhitelist().replace(" ", "").equalsIgnoreCase("")) {
-            whitelistArea.setText("ExampleUser1,ExampleUser2");
-            whitelistArea.setForeground(Color.GRAY);
-        } else {
-            whitelistArea.setText(acc.getAutoVIPSettings().getWhitelist());
-        }
-
-        blacklistTitle.setForeground(Color.WHITE);
-        blacklistTitle.setHorizontalAlignment(SwingConstants.LEFT);
-        blacklistTitle.setVerticalAlignment(SwingConstants.CENTER);
-        blacklistTitle.setFont(new Font("Arial", Font.PLAIN, 18));
-
-        blacklistUndertitle.setForeground(Color.GRAY);
-        blacklistUndertitle.setHorizontalAlignment(SwingConstants.LEFT);
-        blacklistUndertitle.setVerticalAlignment(SwingConstants.CENTER);
-        blacklistUndertitle.setFont(new Font("Arial", Font.ITALIC, 12));
-
-        blacklistTitle.setBounds(450, 385, 400, 20);
-        blacklistUndertitle.setBounds(450, 405, 400, 14);
-        blacklistArea.setBounds(450, 430, 400, 200);
-        blacklistArea.setBackground(new Color(0x262626));
-        blacklistArea.setForeground(Color.WHITE);
-        blacklistArea.setFont(new Font("Arial", Font.PLAIN, 18));
-
-        if (acc.getAutoVIPSettings().getBlacklist().replace(" ", "").equalsIgnoreCase("")) {
-            blacklistArea.setText("ExampleUser1,ExampleUser2");
-            blacklistArea.setForeground(Color.GRAY);
-        } else {
-            blacklistArea.setText(acc.getAutoVIPSettings().getBlacklist());
-        }
-
-        blacklistArea.setWrapStyleWord(true);
-        blacklistArea.setLineWrap(true);
 
         streamsTitle.setForeground(Color.WHITE);
         streamsTitle.setHorizontalAlignment(SwingConstants.LEFT);

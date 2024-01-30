@@ -107,6 +107,11 @@ public class AdminDash_NewsManagement extends JPanel {
                 searchNewsButton.setBackground(new Color(0x1E5E8B));
                 searchNewsButton.setCursor(Cursor.getDefaultCursor());
             }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                windowHandler.openWindow(WindowHandler.WindowType.ADMINDASH_EDITNEWS_SEARCH);
+            }
         });
 
         backButton.addMouseListener(new MouseAdapter() {

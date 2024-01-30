@@ -2,22 +2,21 @@ package de.bot.utils;
 
 public class ToolData {
 
+    private boolean registerEnabled;
     private boolean maintenance_autovip;
     private boolean maintenance_autoshout;
-    private String changelog;
 
-    public ToolData(boolean maintenance_autoshout, boolean maintenance_autovip, String changelog) {
+    public ToolData(boolean registerEnabled, boolean maintenance_autoshout, boolean maintenance_autovip) {
         this.maintenance_autoshout = maintenance_autoshout;
         this.maintenance_autovip = maintenance_autovip;
-        this.changelog = changelog.replace("%bN%", "\\n");
     }
 
-    public void setChangelog(String changelog) {
-        this.changelog = changelog;
+    public void setRegisterEnabled(boolean registerEnabled) {
+        this.registerEnabled = registerEnabled;
     }
 
-    public String getChangelog() {
-        return changelog.replace("%bN%", "\n");
+    public boolean isRegisterEnabled() {
+        return registerEnabled;
     }
 
     public void updateMaintenance(boolean autoshout, boolean autovip) {

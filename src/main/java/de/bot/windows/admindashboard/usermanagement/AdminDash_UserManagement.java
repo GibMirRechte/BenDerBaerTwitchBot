@@ -202,6 +202,11 @@ public class AdminDash_UserManagement extends JPanel {
                 registerOptionsButton.setBackground(new Color(0x1E5E8B));
                 registerOptionsButton.setCursor(Cursor.getDefaultCursor());
             }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                windowHandler.openWindow(WindowHandler.WindowType.ADMINDASH_REGISTERSETTINGS);
+            }
         });
 
         add(editUserButton);

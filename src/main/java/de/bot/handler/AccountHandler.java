@@ -14,34 +14,9 @@ import java.util.Map;
 
 public class AccountHandler {
 
-    private Account account;
+    private static Account account;
     static AccountHandler instance;
     private HashMap<String, AccountRank> accountRanks = new HashMap<>();
-
-    public enum AccountType {
-        SYSTEM(new Color(0xBE0000), "System", "BE0000", true),
-        ADMIN(new Color(0xBE0000), "Admin", "BE0000", true),
-        SR_MODERATOR(new Color(0xFE3F3F), "Senior-Moderator", "FE3F3F", true),
-        MODERATOR(new Color(0xFE3F3F), "Team", "FE3F3F", true),
-        PREMIUM(new Color(0xEFC210), "Premium", "EFC210", false),
-        NORMAL(new Color(0x5D5D5D), "User", "5D5D5D", false);
-
-        public final Color badgeColor;
-        public final String badgeName;
-        public final String htmlColor;
-        public final boolean team;
-
-        AccountType(Color badgeColor, String badgeName, String htmlColor, boolean team) {
-            this.badgeColor = badgeColor;
-            this.badgeName = badgeName;
-            this.htmlColor = htmlColor;
-            this.team = team;
-        }
-
-        public String getHtmlColor() {
-            return htmlColor;
-        }
-    }
 
     public Image getBadge(AccountRank accountRank) {
         BufferedImage tempImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
@@ -115,6 +90,7 @@ public class AccountHandler {
     private final Map<String, String> configMap = new HashMap<>();
 
     public void loadConfig() {
+        if (!new File(filePath).exists()) createConfig();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {

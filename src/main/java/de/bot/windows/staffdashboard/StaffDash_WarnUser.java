@@ -16,8 +16,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.Socket;
@@ -61,19 +59,31 @@ public class StaffDash_WarnUser extends JPanel {
         titleLabel.setFont(new Font("Arial", Font.PLAIN, 36));
         add(titleLabel);
 
+        JLabel selectionBackground = new JLabel();
+        selectionBackground.setBackground(new Color(0x1A1A1A));
+        selectionBackground.setVisible(true);
+        selectionBackground.setOpaque(true);
+        selectionBackground.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
+
+        JLabel warnHistoryBackground2 = new JLabel();
+        warnHistoryBackground2.setBackground(new Color(0x1A1A1A));
+        warnHistoryBackground2.setVisible(true);
+        warnHistoryBackground2.setOpaque(true);
+        warnHistoryBackground2.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
+
         JLabel backButton = new JLabel("<html>\uD83D\uDEAA</html>");
 
         backButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                backButton.setText("<html><u>\uD83D\uDEAA</u></html>");
+                backButton.setBackground(new Color(0x236C9F));
                 backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 backButton.setToolTipText("Zurück");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                backButton.setText("<html>\uD83D\uDEAA</html>");
+                backButton.setBackground(new Color(0x1E5E8B));
                 backButton.setCursor(Cursor.getDefaultCursor());
                 backButton.setToolTipText(null);
             }
@@ -91,8 +101,13 @@ public class StaffDash_WarnUser extends JPanel {
         backButton.setVerticalAlignment(SwingConstants.CENTER);
         backButton.setFont(new Font("Arial", Font.PLAIN, 28));
 
+        JLabel commendBackground = new JLabel();
+        commendBackground.setBackground(new Color(0x1A1A1A));
+        commendBackground.setVisible(true);
+        commendBackground.setOpaque(true);
+        commendBackground.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
+
         JLabel warnHistoryBackground = new JLabel();
-        warnHistoryBackground.setBounds(605, 175, 400, 450);
         warnHistoryBackground.setBackground(new Color(0x262626));
         warnHistoryBackground.setOpaque(true);
         warnHistoryBackground.setVisible(true);
@@ -104,10 +119,7 @@ public class StaffDash_WarnUser extends JPanel {
         warnHistoryTitle.setVerticalAlignment(SwingConstants.CENTER);
         warnHistoryTitle.setFont(new Font("Arial", Font.PLAIN, 20));
 
-        warnHistoryTitle.setBounds(605, 150, 400, 25);
-
         JLabel noWarnsFound = new JLabel("-- Kein Eintrag vorhanden --");
-        noWarnsFound.setBounds(warnHistoryBackground.getBounds());
         noWarnsFound.setForeground(Color.WHITE);
         noWarnsFound.setHorizontalAlignment(SwingConstants.CENTER);
         noWarnsFound.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -149,7 +161,6 @@ public class StaffDash_WarnUser extends JPanel {
         scrollPaneWarns.getViewport().setOpaque(true);
 
         add(scrollPaneWarns);
-        scrollPaneWarns.setBounds(warnHistoryBackground.getBounds());
         editorPaneWarns.setCaretPosition(0);
 
         JTextField customReason = new JTextField();
@@ -158,8 +169,8 @@ public class StaffDash_WarnUser extends JPanel {
         customReason.setBackground(new Color(0x262626));
         customReason.setForeground(Color.WHITE);
         customReason.setHorizontalAlignment(JLabel.CENTER);
-        customReason.setFont(new Font("Arial", Font.BOLD, 16));
-        customReason.setBounds(170, 390, 265, 50);
+        customReason.setFont(new Font("Arial", Font.BOLD, 18));
+        customReason.setBorder(null);
 
         String[] reasons;
 
@@ -174,7 +185,6 @@ public class StaffDash_WarnUser extends JPanel {
         JComboBox selectReason = new JComboBox(reasons);
         selectReason.setBackground(new Color(0x262626));
         selectReason.setFont(new Font("Arial", Font.BOLD, 16));
-        selectReason.setBounds(148, 450, 315, 35);
         selectReason.setUI(new CustomComboBox());
         selectReason.setRenderer(new ComboBoxRenderer());
         selectReason.setFocusable(false);
@@ -184,20 +194,24 @@ public class StaffDash_WarnUser extends JPanel {
         selectReason.addActionListener(e -> {
             String selectedOption = (String) selectReason.getSelectedItem();
             assert selectedOption != null;
-            customReason.setVisible(selectedOption.equalsIgnoreCase("Eigener Grund"));
+            boolean customR = selectedOption.equalsIgnoreCase("Eigener Grund");
+            customReason.setVisible(customR);
+
+            if (customR) {
+                selectionBackground.setBounds(86, 430, 440, 120);
+            } else {
+                selectionBackground.setBounds(86, 430, 440, 75);
+            }
         });
 
         JLabel commentBackground = new JLabel();
-        commentBackground.setBounds(50, 175, 500, 115);
-        commentBackground.setBackground(new Color(0x1A1A1A));
-        commentBackground.setVisible(true);
+        commentBackground.setBackground(new Color(0x262626));
         commentBackground.setOpaque(true);
         commentBackground.setBorder(BorderFactory.createLineBorder(new Color(0x333333), 1));
-
+        commentBackground.setVisible(true);
 
         JLabel modCommentCreator = new JLabel("Von: " + externalUser.getModCommentCreator());
 
-        modCommentCreator.setBounds(70, 195, 500, 20);
         modCommentCreator.setForeground(Color.WHITE);
         modCommentCreator.setHorizontalAlignment(SwingConstants.LEFT);
         modCommentCreator.setHorizontalTextPosition(SwingConstants.LEADING);
@@ -205,9 +219,8 @@ public class StaffDash_WarnUser extends JPanel {
         modCommentCreator.setVerticalAlignment(SwingConstants.CENTER);
         modCommentCreator.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        JLabel modComment = new JLabel("Moderations-Kommentar: " + externalUser.getModComment());
+        JLabel modComment = new JLabel("Kommentar: " + externalUser.getModComment());
 
-        modComment.setBounds(70, 215, 500, 20);
         modComment.setForeground(Color.WHITE);
         modComment.setHorizontalAlignment(SwingConstants.LEFT);
         modComment.setHorizontalTextPosition(SwingConstants.LEADING);
@@ -216,7 +229,6 @@ public class StaffDash_WarnUser extends JPanel {
 
         JLabel noCommentFound = new JLabel("-- Kein Moderationskommentar vorhanden --");
 
-        noCommentFound.setBounds(commentBackground.getBounds());
         noCommentFound.setForeground(Color.WHITE);
         noCommentFound.setHorizontalAlignment(SwingConstants.CENTER);
         noCommentFound.setHorizontalTextPosition(SwingConstants.CENTER);
@@ -246,19 +258,18 @@ public class StaffDash_WarnUser extends JPanel {
         saveFeedback.setHorizontalTextPosition(JLabel.RIGHT);
         saveFeedback.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        saveFeedback.setBounds(200, 120, 625, 40);
         add(saveFeedback);
 
         warnButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
-                warnButton.setText("<html><u>Verwarnen</u></html>");
+                warnButton.setBackground(new Color(0xE04F4F));
                 warnButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                warnButton.setText("Verwarnen");
+                warnButton.setBackground(new Color(0xAD4848));
                 warnButton.setCursor(Cursor.getDefaultCursor());
             }
 
@@ -292,7 +303,6 @@ public class StaffDash_WarnUser extends JPanel {
                     Socket socket = new Socket("45.93.249.139", 3459);
                     OutputStream outputStream = socket.getOutputStream();
                     PrintStream printStream = new PrintStream(outputStream);
-                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
                     printStream.println("CREATE_WARN");
                     printStream.println(accountHandler.getAccount().getName());
@@ -315,8 +325,23 @@ public class StaffDash_WarnUser extends JPanel {
         warnButton.setVerticalAlignment(SwingConstants.CENTER);
         warnButton.setFont(new Font("Arial", Font.PLAIN, 28));
 
+        modCommentCreator.setBounds(55, 180, 500, 20);
+        modComment.setBounds(55, 200, 500, 20);
+        commentBackground.setBounds(40, 175, 500, 115);
+        warnHistoryTitle.setBounds(605, 175, 400, 25);
+        warnHistoryBackground.setBounds(605, 200, 400, 505);
         backButton.setBounds(925, 750, 90, 50);
         warnButton.setBounds(20, 750, 885, 50);
+        saveFeedback.setBounds(200, 120, 625, 40);
+        customReason.setBounds(106, 500, 400, 35);
+        selectReason.setBounds(106, 450, 400, 35);
+        scrollPaneWarns.setBounds(warnHistoryBackground.getBounds());
+        noWarnsFound.setBounds(warnHistoryBackground.getBounds());
+
+        selectionBackground.setBounds(86, 430, 440, 75);
+        warnHistoryBackground2.setBounds(580, 155, 450, 575);
+        commendBackground.setBounds(20, 155, 540, 155);
+
         add(warnButton);
         add(backButton);
 
@@ -325,5 +350,9 @@ public class StaffDash_WarnUser extends JPanel {
             add(customReason);
         add(warnHistoryTitle);
         add(warnHistoryBackground);
+
+        add(selectionBackground);
+        add(warnHistoryBackground2);
+        add(commendBackground);
     }
 }

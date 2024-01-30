@@ -127,10 +127,10 @@ public class Dashboard extends JPanel {
         add(newsBackground);
         add(accountInfoBackground);
 
-        accountInfo.setBounds(40, 170, 250, 20);
-        channelID.setBounds(40, 190, 250, 20);
-        rank.setBounds(40, 210, 250, 20);
-        accountInfoBackground.setBounds(20, 150, 290, 100);
+        accountInfo.setBounds(40, 170, 300, 20);
+        channelID.setBounds(40, 190, 300, 20);
+        rank.setBounds(40, 210, 300, 20);
+        accountInfoBackground.setBounds(20, 150, 340, 100);
 
         newsTitle.setBounds(40, 556, 300, 30);
         latestNews.setBounds(40, 596, 300, 180);
