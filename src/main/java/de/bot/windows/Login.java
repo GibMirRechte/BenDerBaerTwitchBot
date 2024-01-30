@@ -25,7 +25,7 @@ public class Login extends JPanel {
     UpdateHandler updateHandler = UpdateHandler.getInstance();
     AccountHandler accountHandler = AccountHandler.getInstance();
     WindowHandler windowHandler = WindowHandler.getInstance();
-    long lastLoginAttempt = System.currentTimeMillis();
+    long lastLoginAttempt = System.currentTimeMillis()-1500;
 
     public Login() {
         setPreferredSize(new Dimension(1296, 816));
@@ -152,7 +152,7 @@ public class Login extends JPanel {
 
 
         KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
-            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER && windowHandler.getCurrentWindowType().equals(WindowHandler.WindowType.LOGIN)) {
                 for (MouseListener mouseListener : loginButton.getMouseListeners()) {
                     MouseEvent simulateClick = new MouseEvent(
                             loginButton, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, 0, 0, 1, false);
@@ -185,6 +185,14 @@ public class Login extends JPanel {
                 }
 
                 if (!username.getText().equalsIgnoreCase("Benutzername") && !password.getText().equalsIgnoreCase("Passwort")) {
+
+                    if(lastLoginAttempt > (System.currentTimeMillis()-3000)){
+                        loginFeedback.setText("Bitte warte einen kleinen Augenblick.");
+                        loginFeedback.setVisible(true);
+                        return;
+                    }
+
+                    lastLoginAttempt = System.currentTimeMillis();
                     String name = username.getText();
                     String pw = password.getText();
                     try {

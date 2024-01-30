@@ -26,21 +26,22 @@ public class WindowHandler {
     static WindowHandler instance;
     static News currentNews;
     static ExternalUser currentExternalUser;
+    static WindowType currentWindowType;
     UpdateHandler updateHandler = UpdateHandler.getInstance();
     AccountHandler accountHandler = AccountHandler.getInstance();
 
-    private Image icon = Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/images/icon.png"));
+    private final Image icon = Toolkit.getDefaultToolkit().getImage(Main.class.getResource("/images/icon.png"));
 
 
     public enum WindowType {
         DASHBOARD(false), AUTOMESSAGES(false), LOGIN(false), AUTOVIP(true), UPDATE(false),
         NOT_ALLOWED(false), AUTOSHOUT(false), STREAMS(false), SETTINGS(false), ADMINDASHBOARD(false), STAFFDASHBOARD(false),
         FEEDBACK(false), UserInfo(false), BanUser(false), WarnUser(false), SUPPORT(false),
-        PRIVATE_MESSAGES(false), ADMINDASH_USERMANAGEMENT(false), ADMINDASH_NEWSMANAGEMENT(false), ADMINDASH_CREATENEWS(false), ADMINDASH_CREATERANK(false),
+        ADMINDASH_USERMANAGEMENT(false), ADMINDASH_NEWSMANAGEMENT(false), ADMINDASH_CREATENEWS(false), ADMINDASH_CREATERANK(false),
         ADMINDASH_CREATEUSER(false), NEWS(false), ADMINDASH_EDITUSER(false), ADMINDASH_EDITUSER_SEARCH(false),
         ADMINDASH_EDITNEWS_SEARCH(false), NEWEST_NEWS(false), CUSTOMCOMMANDS(false), REGISTER(false), ADMINDASH_REGISTERSETTINGS(false);
 
-        public boolean onlyVIP;
+        public final boolean onlyVIP;
 
         WindowType(boolean onlyVIP) {
             this.onlyVIP = onlyVIP;
@@ -71,6 +72,7 @@ public class WindowHandler {
             }
 
             Sidebar sidebar = new Sidebar(staffDBType);
+            currentWindowType = staffDBType;
 
             switch (staffDBType) {
                 case UserInfo ->
@@ -91,6 +93,8 @@ public class WindowHandler {
             openWindow(WindowType.DASHBOARD);
         }
     }
+
+
 
     public void openWindow(WindowType windowType) {
         ToolData toolData = updateHandler.getToolData();
@@ -119,6 +123,8 @@ public class WindowHandler {
                 }
             }
         }
+
+        currentWindowType = windowType;
 
         switch (windowType) {
             case DASHBOARD -> {
@@ -308,6 +314,9 @@ public class WindowHandler {
         openWindow(WindowType.ADMINDASH_EDITUSER);
     }
 
+    public WindowType getCurrentWindowType() {
+        return currentWindowType;
+    }
 
     public void openNewsPage(String newsKey) {
         currentNews = NewsHandler.getInstance().getNews(newsKey);
