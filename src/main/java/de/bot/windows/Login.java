@@ -150,6 +150,19 @@ public class Login extends JPanel {
             }
         });
 
+
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventDispatcher(e -> {
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                for (MouseListener mouseListener : loginButton.getMouseListeners()) {
+                    MouseEvent simulateClick = new MouseEvent(
+                            loginButton, MouseEvent.MOUSE_RELEASED, System.currentTimeMillis(), 0, 0, 0, 1, false);
+                    mouseListener.mouseReleased(simulateClick);
+                }
+            }
+            return false;
+        });
+
+
         loginButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {
